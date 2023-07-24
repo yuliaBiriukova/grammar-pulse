@@ -20,7 +20,9 @@ export const AddLevelForm = () => {
         setName(event.currentTarget.value);
     }
 
-    const onSaveClicked = async () => {
+    const onSaveClicked = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+
         if(!(code && name)) return;
 
         const newLevel: AddLevelModel = {
