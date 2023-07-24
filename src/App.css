@@ -1,0 +1,147 @@
+.container {
+  padding: 32px 15% 0 15%;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+}
+
+.d-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.d-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.d-flex-end {
+  display: flex;
+  justify-content: end;
+}
+
+.d-flex-start-center {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.d-flex-end-center {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.title {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+.text-decoration-none {
+  text-decoration: none;
+  color: #000;
+}
+
+.content-container {
+  margin-left: 32px;
+  padding: 32px;
+  background: #FFF;
+  width: 100%;
+}
+
+.mt-1 {
+  margin-top: 8px;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.mt-3 {
+  margin-top: 24px;
+}
+
+.mb-1 {
+  margin-bottom: 8px;
+}
+
+.ml-4 {
+  margin-left: 32px;
+}
+
+.mr-1 {
+  margin-right: 8px;
+}
+
+.mr-2 {
+  margin-right: 16px;
+}
+
+.mr-3 {
+  margin-right: 24px;
+}
+
+.button-primary {
+  color:#fff;
+  font-size: 16px;
+  border: none;
+  text-decoration: none;
+  background: #FF337A;
+  border-radius: 8px;
+  padding: 10px 24px;
+}
+
+.button-primary:hover {
+  background: #F50056;
+}
+
+.button-secondary {
+  text-decoration: none;
+  font-size: 16px;
+  color: #000;
+  background: #FFF;
+  padding: 8px 24px;
+  border-radius: 8px;
+  border: 1px solid #CCC;
+}
+
+.button-secondary:hover {
+  border: 1px solid #F50056;
+}
+
+.input-field {
+  display: flex;
+  flex-basis: 100%;
+  border-radius: 8px;
+  border: 1px solid #CCC;
+  background: #FFF;
+  padding: 10px 24px 10px 16px;
+  font-size: 16px;
+}
+
+.input-field:focus {
+  outline: none;
+  border: 2px solid #FF99BD;
+  padding: 9px 23px 9px 15px;
+}
+
+.input-field::placeholder {
+  color: #CCCCCC;
+}
+
+.icon-button {
+  width: 24px;
+  height: 24px;
+  padding: 6px;
+}
+
+.icon-button:hover {
+  background: #ffffff;
+  border-radius: 100%;
+  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.06)) drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.04));
+}
