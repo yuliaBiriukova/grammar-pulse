@@ -17,11 +17,9 @@
     line-height: 24px;
 }
 
-.list-item {
+.list > .list-item {
     margin: 16px 0 0 0;
 }
-
-
 
 .link {
     text-decoration: none;

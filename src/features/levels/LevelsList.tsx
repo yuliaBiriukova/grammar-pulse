@@ -20,9 +20,7 @@ export const LevelsList = () => {
 
     let content;
 
-    if(levelsStatus === 'loading') {
-        content = <p>Wait till levels are loaded!</p>;
-    } else if(levelsStatus === 'succeeded') {
+    if(levelsStatus === 'succeeded') {
         content = levelsIds.map(levelId => (
             <LeveListItem key={levelId} levelId={levelId}/>
         ));

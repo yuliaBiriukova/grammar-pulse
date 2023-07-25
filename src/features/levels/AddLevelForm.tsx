@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useAppDispatch} from "../../app/hooks";
 import {AddLevelModel} from "../models/AddLevelModel";
-import {addNewLevel} from "./levelsSlice";
+import {addLevel} from "./levelsSlice";
 import {useNavigate} from "react-router-dom";
 
 export const AddLevelForm = () => {
@@ -30,7 +30,7 @@ export const AddLevelForm = () => {
             name
         };
         try{
-            await dispatch(addNewLevel(newLevel)).unwrap();
+            await dispatch(addLevel(newLevel)).unwrap();
             setName('');
             setCode('');
             //TODO navigate to added level page

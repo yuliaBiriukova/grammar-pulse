@@ -23,7 +23,7 @@ export const fetchLevels = createAsyncThunk(
     }
 );
 
-export const addNewLevel = createAsyncThunk(
+export const addLevel = createAsyncThunk(
     'levels/addLevel',
     async (newLevel : AddLevelModel)=> {
         const id = await addLevelAsync(newLevel);
@@ -66,7 +66,7 @@ const levelsSlice = createSlice({
             .addCase(fetchLevels.rejected, (state, action) => {
                 state.status = 'failed';
             })
-            .addCase(addNewLevel.fulfilled, levelsAdapter.addOne)
+            .addCase(addLevel.fulfilled, levelsAdapter.addOne)
             .addCase(deleteLevel.fulfilled, levelsAdapter.removeOne)
             .addCase(editLevel.fulfilled, levelsAdapter.upsertOne);
     }
