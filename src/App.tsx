@@ -8,6 +8,8 @@ import {AddLevelContainer} from "./features/containers/AddLevelContainer";
 import {EditLevelContainer} from "./features/containers/EditLevelContainer";
 
 import './App.css';
+import {AddTopicContainer} from "./features/containers/AddTopicContainer";
+import {TopicContainer} from "./features/containers/TopicContainer";
 
 function App() {
       return (
@@ -29,6 +31,14 @@ function App() {
                     <Route
                         path="levels/:levelId/edit"
                         element={ <EditLevelContainer /> }
+                    />
+                    <Route
+                        path="topics/:levelId/new"
+                        element={ <AddTopicContainer /> }
+                    />
+                    <Route
+                        path="topics/:levelId/:topicId"
+                        element={ <TopicContainer /> }
                     />
                     <Route
                         path="*"

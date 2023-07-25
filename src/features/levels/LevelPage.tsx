@@ -1,22 +1,29 @@
 import React from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
+import {EntityId} from "@reduxjs/toolkit";
+
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {deleteLevel, selectLevelById} from "./levelsSlice";
-import {EntityId} from "@reduxjs/toolkit";
+import {TopicsList} from "../topics/TopicsList";
 import deleteIcon from '../../images/delete-icon.svg';
 import editIcon from '../../images/edit_icon.svg';
 
 export const LevelPage = () => {
     const {levelId} = useParams();
+    
     const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+    
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const onDeleteClick = async () => {
         if(level) {
-            await dispatch(deleteLevel(level.id));
-            // TODO check if delete fulfilled before redirecting
-            navigate('/');
+            try{
+                await dispatch(deleteLevel(level.id));
+                navigate('/');
+            } catch (err) {
+                console.error('Failed to delete the level: ', err);
+            }
         }
     }
 
@@ -25,7 +32,7 @@ export const LevelPage = () => {
             <div className='d-flex'>
                 <h2 className='title'>{level?.code}: {level?.name}</h2>
                 <div className='d-flex'>
-                    <Link to='topics/new' className='button-primary mr-3'>Add topic</Link>
+                    <Link to={`/topics/${level?.id}/new`} className='button-primary mr-3'>Add topic</Link>
                     <div className='d-flex'>
                         <Link to={`/levels/${level?.id}/edit`} className='icon-button mr-1'>
                             <img src={editIcon} alt="edit-icon"/>
@@ -36,9 +43,7 @@ export const LevelPage = () => {
                     </div>
                 </div>
             </div>
-            <p className='mt-3'>
-
-            </p>
+            <TopicsList levelId={parseInt(levelId as string)}/>
         </div>
     )
 }
