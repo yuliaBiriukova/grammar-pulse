@@ -23,8 +23,22 @@ export default class ApiHelper {
         return response.json();
     }
 
+    public static async put<T>(url: string, id: number | string, model: T) {
+        const endpoint = this.createEndpoint(url) + '/'+ id;
+        const response = await fetch(
+            endpoint, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({...model}),
+            }
+        );
+        return (await ApiHelper.parseResponseData(response)) as Promise<T>;
+    }
+
     public static async delete<T>(url: string, id: T) {
-        const endpoint = this.createEndpoint(url) + `/${id}`;
+        const endpoint = this.createEndpoint(url) + '/' + id;
         const response = await fetch(
             endpoint, {
                 method: 'DELETE',

@@ -1,13 +1,16 @@
 import React, {useState} from "react";
-import {useAppDispatch} from "../../app/hooks";
-import {AddLevelModel} from "../models/AddLevelModel";
-import {addNewLevel} from "./levelsSlice";
-import {useNavigate} from "react-router-dom";
+import {EntityId} from "@reduxjs/toolkit";
+import {useNavigate, useParams} from "react-router-dom";
 
-export const AddLevelForm = () => {
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {editLevel, selectLevelById} from "./levelsSlice";
 
-    const [code, setCode] = useState('');
-    const [name, setName] = useState('');
+export const EditLevelForm = () => {
+    const {levelId} = useParams();
+    const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+
+    const [code, setCode] = useState(level?.code);
+    const [name, setName] = useState(level?.name);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -23,19 +26,15 @@ export const AddLevelForm = () => {
     const onSaveClicked = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        if(!(code && name)) return;
+        if(!(code && name && level?.id)) return;
 
-        const newLevel: AddLevelModel = {
-            code,
-            name
-        };
         try{
-            await dispatch(addNewLevel(newLevel)).unwrap();
+            await dispatch(editLevel({...level, code, name})).unwrap();
             setName('');
             setCode('');
-            //TODO navigate to added level page
+            navigate(`/levels/${levelId}`);
         } catch (err) {
-            console.error('Failed to save the level: ', err);
+            console.error('Failed to edit the level: ', err);
         }
     }
 
@@ -45,7 +44,7 @@ export const AddLevelForm = () => {
 
     return (
         <div className='content-container'>
-            <h2 className='title'>Add new level</h2>
+            <h2 className='title'>Edit level</h2>
             <form className='d-flex-column'>
                 <label className='mt-3 mb-1'>Code</label>
                 <input

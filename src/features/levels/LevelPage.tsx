@@ -10,7 +10,7 @@ export const LevelPage = () => {
     const {levelId} = useParams();
     const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
     const dispatch = useAppDispatch();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     const onDeleteClick = async () => {
         if(level) {
@@ -27,7 +27,7 @@ export const LevelPage = () => {
                 <div className='d-flex'>
                     <Link to='topics/new' className='button-primary mr-3'>Add topic</Link>
                     <div className='d-flex'>
-                        <Link to={`levels/${levelId}/edit`} className='icon-button mr-1'>
+                        <Link to={`/levels/${level?.id}/edit`} className='icon-button mr-1'>
                             <img src={editIcon} alt="edit-icon"/>
                         </Link>
                         <div className='icon-button' onClick={onDeleteClick}>

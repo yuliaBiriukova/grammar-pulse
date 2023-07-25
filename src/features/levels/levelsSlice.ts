@@ -1,7 +1,7 @@
 import {createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import {Level} from "../models/Level";
 import {RootState} from "../../app/store";
-import {addLevelAsync, deleteLevelAsync, fetchLevelsAsync} from "./levelsApi";
+import {addLevelAsync, deleteLevelAsync, editLevelAsync, fetchLevelsAsync} from "./levelsApi";
 import {AddLevelModel} from "../models/AddLevelModel";
 
 const levelsAdapter = createEntityAdapter<Level>({
@@ -26,14 +26,26 @@ export const fetchLevels = createAsyncThunk(
 export const addNewLevel = createAsyncThunk(
     'levels/addLevel',
     async (newLevel : AddLevelModel)=> {
-        return await addLevelAsync(newLevel);
+        const id = await addLevelAsync(newLevel);
+        return  {
+            id,
+            ...newLevel
+        }
+    }
+);
+
+export const editLevel = createAsyncThunk(
+    'levels/editLevel',
+    async (level : Level)=> {
+        await editLevelAsync(level);
+        return level;
     }
 );
 
 export const deleteLevel = createAsyncThunk(
     'levels/deleteLevel',
     async (id : number)=> {
-        await deleteLevelAsync(id)
+        await deleteLevelAsync(id);
         return id;
     }
 );
@@ -55,7 +67,8 @@ const levelsSlice = createSlice({
                 state.status = 'failed';
             })
             .addCase(addNewLevel.fulfilled, levelsAdapter.addOne)
-            .addCase(deleteLevel.fulfilled, levelsAdapter.removeOne);
+            .addCase(deleteLevel.fulfilled, levelsAdapter.removeOne)
+            .addCase(editLevel.fulfilled, levelsAdapter.upsertOne);
     }
 });
 
