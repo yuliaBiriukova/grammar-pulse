@@ -10,6 +10,7 @@ import {EditLevelContainer} from "./features/containers/EditLevelContainer";
 import './App.css';
 import {AddTopicContainer} from "./features/containers/AddTopicContainer";
 import {TopicContainer} from "./features/containers/TopicContainer";
+import {EditTopicContainer} from "./features/containers/EditTopicContainer";
 
 function App() {
       return (
@@ -39,6 +40,10 @@ function App() {
                     <Route
                         path="topics/:levelId/:topicId"
                         element={ <TopicContainer /> }
+                    />
+                    <Route
+                        path="topics/:levelId/:topicId/edit"
+                        element={ <EditTopicContainer /> }
                     />
                     <Route
                         path="*"

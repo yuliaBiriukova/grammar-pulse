@@ -17,7 +17,8 @@ export const LevelPage = () => {
     const navigate = useNavigate();
 
     const onDeleteClick = async () => {
-        if(level) {
+        let isConfirm = window.confirm('Delete this level?');
+        if(level && isConfirm) {
             try{
                 await dispatch(deleteLevel(level.id));
                 navigate('/');
@@ -29,10 +30,12 @@ export const LevelPage = () => {
 
     return (
         <div className='content-container'>
-            <div className='d-flex'>
-                <h2 className='title'>{level?.code}: {level?.name}</h2>
+            <div className='d-flex-align-start'>
+                <div className='d-flex align-self-center'>
+                    <h2 className='title'>{level?.code}: {level?.name}</h2>
+                </div>
                 <div className='d-flex'>
-                    <Link to={`/topics/${level?.id}/new`} className='button-primary mr-3'>Add topic</Link>
+                    <Link to={`/topics/${level?.id}/new`} className='button-primary mr-3'>Add&nbsp;topic</Link>
                     <div className='d-flex'>
                         <Link to={`/levels/${level?.id}/edit`} className='icon-button mr-1'>
                             <img src={editIcon} alt="edit-icon"/>

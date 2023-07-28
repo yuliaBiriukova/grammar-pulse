@@ -23,7 +23,10 @@ export const AddLevelForm = () => {
     const onSaveClicked = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        if(!(code && name)) return;
+        if(!(code && name)) {
+            alert('Can not save! Fill the fields!');
+            return;
+        }
 
         const newLevel: AddLevelModel = {
             code,
@@ -47,14 +50,13 @@ export const AddLevelForm = () => {
         <div className='content-container'>
             <h2 className='title'>Add new level</h2>
             <form className='d-flex-column'>
-                <label className='mt-3 mb-1'>Code</label>
+                <label className='mt-0 mb-1'>Code</label>
                 <input
                     className='input-field'
                     type="text"
                     placeholder='Enter code here'
                     value={code}
                     onChange={onCodeChange}
-                    required
                 ></input>
                 <label className='mt-2 mb-1'>Name</label>
                 <input
@@ -63,7 +65,6 @@ export const AddLevelForm = () => {
                     placeholder='Enter name here'
                     value={name}
                     onChange={onNameChange}
-                    required
                 ></input>
                 <div className='d-flex-end mt-3'>
                     <button type='button' className='button-secondary mr-2' onClick={onCancelClicked}>Cancel</button>

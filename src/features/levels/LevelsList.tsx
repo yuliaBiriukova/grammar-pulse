@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {fetchLevels, selectLevelsIds} from "./levelsSlice";
 import {LeveListItem} from "./LeveListItem";
-import './LevelList.css';
 import plusIcon from '../../images/plus_icon.svg';
 import {Link} from "react-router-dom";
 
@@ -29,12 +28,12 @@ export const LevelsList = () => {
     }
 
     return (
-        <div className='levels-container'>
+        <div className='side-container'>
             <div className='d-flex'>
                 <Link to='/' className='cursor-pointer text-decoration-none'>
-                    <h2 className='title'>Levels</h2>
+                    <h2 className='side-list-title'>Levels</h2>
                 </Link>
-                <Link to='/levels/new' className='icon-button'>
+                <Link to='/levels/new' className='icon-button ml-2'>
                     <img src={plusIcon} alt="plus_icon"/>
                 </Link>
             </div>

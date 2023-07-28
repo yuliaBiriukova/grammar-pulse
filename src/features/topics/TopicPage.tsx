@@ -21,7 +21,8 @@ export const TopicPage = () => {
     }
 
     const onDeleteClick = async () => {
-        if(topic) {
+        let isConfirm = window.confirm('Delete this topic?');
+        if(topic && isConfirm) {
             try{
                 await dispatch(deleteTopic([topic.id, topic.levelId]));
                 navigate(`/levels/${levelId}`);
@@ -34,10 +35,13 @@ export const TopicPage = () => {
 
     return (
         <div className='content-container'>
-            <div className='d-flex'>
-                <h2 className='title'>{topic?.name}</h2>
+            <div className='d-flex-align-start'>
+                <div className='d-flex align-self-center'>
+                    <h2 className='title'>{topic?.name}</h2>
+                </div>
                 <div className='d-flex'>
-                    <Link to={`/exercises/${topicId}/`} className='button-primary mr-3'>View exercises</Link>
+                    <Link to={`/exercises/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
+                    <Link to={`/`} className='button-primary mr-3'>Practice</Link>
                     <div className='d-flex'>
                         <Link to={`/topics/${levelId}/${topicId}/edit`} className='icon-button mr-1'>
                             <img src={editIcon} alt="edit-icon"/>
@@ -48,7 +52,8 @@ export const TopicPage = () => {
                     </div>
                 </div>
             </div>
-            <p className='mt-3'>{topic?.content}</p>
+            <span className='text-small mr-3'>version&nbsp;{topic?.version}</span>
+            <p className='mt-3' dangerouslySetInnerHTML={{ __html: topic?.content as string }}></p>
         </div>
     )
 }

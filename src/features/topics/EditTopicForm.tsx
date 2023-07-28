@@ -1,22 +1,23 @@
 import React, {useState} from "react";
-import {EntityId} from "@reduxjs/toolkit";
 import {useNavigate, useParams} from "react-router-dom";
-import {Editor} from "@tinymce/tinymce-react";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectLevelById} from "../levels/levelsSlice";
-import {AddTopicModel} from "../models/AddTopicModel";
-import {addTopic} from "./topicsSlice";
+import {editTopic, selectTopicById} from "./topicsSlice";
+import {Topic} from "../models/Topic";
+import {Editor} from "@tinymce/tinymce-react";
 
-export const AddTopicForm = () => {
+export const EditTopicForm = () => {
+    const {levelId, topicId} = useParams();
+    const topic = useAppSelector(state =>
+        selectTopicById(state, parseInt(levelId as string), parseInt(topicId as string))
+    );
 
-    const { levelId } = useParams();
-    const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
-
-    const [name, setName] = useState('');
-    const [content, setContent] = useState('');
+    const [name, setName] = useState(topic?.name);
+    const [content, setContent] = useState(topic?.content);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    let [errorText, setErrorText] = useState('');
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);
@@ -30,24 +31,18 @@ export const AddTopicForm = () => {
         event.preventDefault();
 
         if(!(name && content)) {
-            alert('Can not save! Fill the fields!');
+            setErrorText('Can not save! Fill the fields!');
+            /*alert('Can not save! Fill the fields!');*/
             return;
         }
 
-        const newTopic: AddTopicModel = {
-            name,
-            content,
-            levelId: level?.id as number,
-            version: 1
-        };
-
         try{
-            await dispatch(addTopic(newTopic)).unwrap();
+            await dispatch(editTopic({...topic, name, content} as Topic)).unwrap();
             setName('');
             setContent('');
-            navigate(`/levels/${levelId}`);
+            navigate(`/topics/${levelId}/${topicId}`);
         } catch (err) {
-            console.error('Failed to save the topic: ', err);
+            console.error('Failed to edit the level: ', err);
         }
     }
 
@@ -57,15 +52,18 @@ export const AddTopicForm = () => {
 
     return (
         <div className='content-container'>
-            <h2 className='title'>{level?.code}:{level?.name} / Add new topic</h2>
+            <h2 className='title'>Edit topic</h2>
+            {errorText && (<p>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-3 mb-1'>Name</label>
                 <input
                     className='input-field'
-                    type="text"
-                    placeholder='Enter content here'
+                    name='name'
+                    type='text'
+                    placeholder='Enter name here'
                     value={name}
                     onChange={onNameChange}
+                    required
                 ></input>
                 <label className='mt-2 mb-1'>Content</label>
                 <Editor
@@ -77,22 +75,21 @@ export const AddTopicForm = () => {
                         plugins: [
                             'advlist autolink lists link image charmap print preview anchor',
                             'searchreplace visualblocks code fullscreen',
-                            'insertdatetime media table paste code wordcount'
+                            'insertdatetime media table paste code help wordcount'
                         ],
                         toolbar: 'undo redo | formatselect | ' +
                             'bold italic backcolor | alignleft aligncenter ' +
                             'alignright alignjustify | bullist numlist outdent indent | ' +
-                            'removeformat ',
+                            'removeformat | help',
                         content_style: 'body { font-family: Segoe UI, sans-serif; font-size:16px }'
                     }}
                 />
 {/*                <textarea
-                    id='html-editor'
-                    className='input-field text-area-field'
+                    className='input-field'
                     placeholder='Enter content here'
                     value={content}
                     onChange={onContentChange}
-                    rows={10}
+                    required
                 ></textarea>*/}
                 <div className='d-flex-end mt-3'>
                     <button type='button' className='button-secondary mr-2' onClick={onCancelClicked}>Cancel</button>

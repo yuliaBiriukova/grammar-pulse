@@ -1,6 +1,6 @@
 import {createAsyncThunk, createEntityAdapter, createSelector, createSlice, EntityId} from "@reduxjs/toolkit";
 import {Topic} from "../models/Topic";
-import {addTopicAsync, deleteTopicAsync, fetchTopicsByLevelAsync} from "./topicsApi";
+import {addTopicAsync, deleteTopicAsync, editTopicAsync, fetchTopicsByLevelAsync} from "./topicsApi";
 import {RootState} from "../../app/store";
 import {AddTopicModel} from "../models/AddTopicModel";
 
@@ -43,6 +43,17 @@ export const addTopic = createAsyncThunk(
     }
 );
 
+export const editTopic = createAsyncThunk(
+    'topics/editTopic',
+    async (topic : Topic)=> {
+        await editTopicAsync(topic);
+        return {
+            ...topic,
+            version: topic.version + 1,
+        };
+    }
+);
+
 export const deleteTopic = createAsyncThunk(
     'topics/deleteTopic',
     async (ids: [number, number])=> {
@@ -71,12 +82,22 @@ const topicsSlice = createSlice({
             .addCase(addTopic.fulfilled, (state, action) => {
                 const { levelId} = action.payload;
                 state.entities[levelId]?.topics.push(action.payload);
-                state.status = 'succeeded';
             })
             .addCase(deleteTopic.fulfilled, (state, action) => {
                 const [topicId, levelId]  = action.payload;
-                state.status = 'succeeded';
                 let topics = [...state.entities[levelId]?.topics ?? []].filter(topic => topic.id !== topicId);
+                state.entities[levelId]?.topics.splice(0, state.entities[levelId]?.topics.length);
+                state.entities[levelId]?.topics.push(...topics);
+            })
+            .addCase(editTopic.fulfilled, (state, action) => {
+                const newTopic = action.payload;
+                const levelId = newTopic.levelId;
+                let topics = [...state.entities[levelId]?.topics ?? []];
+                const oldTopic = topics.find(topic => topic.id === newTopic.id);
+                if(oldTopic) {
+                    let index = topics.indexOf(oldTopic);
+                    topics[index] = newTopic;
+                }
                 state.entities[levelId]?.topics.splice(0, state.entities[levelId]?.topics.length);
                 state.entities[levelId]?.topics.push(...topics);
             });
@@ -89,7 +110,7 @@ export const {
     selectAll: selectLevelsTopics,
     selectIds: selectLevelsIds,
     selectById: selectTopicsByLevelId
-} = topicsAdapter.getSelectors<RootState>(state => state.levelsTopics);
+} = topicsAdapter.getSelectors<RootState>(state => state.topics);
 
 export const selectTopicsIds = createSelector(
     (state: RootState, levelId: EntityId) => selectTopicsByLevelId(state, levelId),
