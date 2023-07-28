@@ -10,7 +10,7 @@ export const TopicsList = ({ levelId }: TopicsListProps) => {
     const dispatch = useAppDispatch();
     const levelsIds = useAppSelector(selectLevelsIds);
     const topicsIds = useAppSelector(state => selectTopicsIds(state, levelId));
-    const topicsStatus = useAppSelector(state => state.levelsTopics.status);
+    const topicsStatus = useAppSelector(state => state.topics.status);
 
     useEffect(() => {
         if (!levelsIds.includes(levelId)) {

@@ -13,7 +13,7 @@ export const TopicListItem = ({levelId, topicId} : TopicProps) => {
     const topic = useAppSelector(state => selectTopicById(state, levelId, topicId));
 
     return (
-        <li key={topic?.id} className='list-item' >
+        <li key={topic?.id} className='mt-1' >
             <Link to={`/topics/${levelId}/${topicId}`} className='link'>{topic?.name}</Link>
         </li>
     );

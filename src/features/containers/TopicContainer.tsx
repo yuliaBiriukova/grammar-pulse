@@ -1,11 +1,11 @@
 import React from "react";
-import {LevelsList} from "../levels/LevelsList";
 import {TopicPage} from "../topics/TopicPage";
+import {LevelTopicsSideList} from "../topics/LevelTopicsSideList";
 
 export const TopicContainer = () => {
     return (
         <div className="container">
-            <LevelsList/>
+            <LevelTopicsSideList/>
             <TopicPage/>
         </div>
     );

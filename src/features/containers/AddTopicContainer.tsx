@@ -1,11 +1,11 @@
 import React from "react";
-import {LevelsList} from "../levels/LevelsList";
 import {AddTopicForm} from "../topics/AddTopicForm";
+import {LevelTopicsSideList} from "../topics/LevelTopicsSideList";
 
 export const AddTopicContainer = () => {
     return (
         <div className="container">
-            <LevelsList/>
+            <LevelTopicsSideList/>
             <AddTopicForm/>
         </div>
     );

@@ -5,7 +5,7 @@ import topicsReducer from "../features/topics/topicsSlice";
 export const store = configureStore({
   reducer: {
     levels: levelsReducer,
-    levelsTopics: topicsReducer
+    topics: topicsReducer
   },
 });
 
