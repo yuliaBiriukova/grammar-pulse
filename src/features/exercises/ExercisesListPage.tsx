@@ -33,7 +33,7 @@ export const ExercisesListPage = () => {
                     <Link to={`/exercises/${topic?.id}/new`} className='button-primary'>Add&nbsp;exercise</Link>
                 </div>
             </div>
-            <ExercisesList topicId={parseInt(topicId as string)}/>
+            <ExercisesList levelId={parseInt(levelId as string)} topicId={parseInt(topicId as string)}/>
         </div>
     )
 }

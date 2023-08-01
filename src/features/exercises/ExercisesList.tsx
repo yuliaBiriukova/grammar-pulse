@@ -4,9 +4,11 @@ import {fetchExercisesByTopic, selectExercisesIds, selectTopicsIds} from "./exer
 import {ExerciseListItem} from "./ExerciseListItem";
 
 interface ExercisesListProps {
+    levelId: number;
     topicId: number;
 }
-export const ExercisesList = ({ topicId }: ExercisesListProps) => {
+
+export const ExercisesList = ({ levelId, topicId }: ExercisesListProps) => {
     const dispatch = useAppDispatch();
     const topicsIds = useAppSelector(selectTopicsIds);
     const exercisesIds = useAppSelector(state => selectExercisesIds(state, topicId));
@@ -22,7 +24,7 @@ export const ExercisesList = ({ topicId }: ExercisesListProps) => {
 
     if(exercisesStatus === 'succeeded'){
         content = exercisesIds?.map(exerciseId => (
-            <ExerciseListItem key={topicId} topicId={topicId} exerciseId={exerciseId}/>
+            <ExerciseListItem key={topicId} levelId={levelId} topicId={topicId} exerciseId={exerciseId}/>
         ));
     }
 
