@@ -25,8 +25,6 @@ export const LevelTopicsSideList = () => {
         }
     }, [levelsStatus, dispatch, levelsIds.length, levelId]);
 
-    
-
     let content;
 
     if(topicsStatus === 'succeeded' && level){

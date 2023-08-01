@@ -125,3 +125,7 @@ export const selectTopicsIds = createSelector(
 export const selectTopicById = (state: RootState, levelId: number, topicId: number) => {
     return selectTopicsByLevelId(state, levelId)?.topics.find(topic => topic.id === topicId);
 }
+
+export const selectLastLevelTopicId = (state: RootState, levelId: number) => {
+    return selectTopicsByLevelId(state, levelId)?.topics.at(-1)?.id;
+}

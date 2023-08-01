@@ -1,16 +1,26 @@
-import React, {useState} from "react";
-import {useAppDispatch} from "../../app/hooks";
+import React, {useEffect, useState} from "react";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {AddLevelModel} from "../models/AddLevelModel";
-import {addLevel} from "./levelsSlice";
+import {addLevel, selectLastLevelId} from "./levelsSlice";
 import {useNavigate} from "react-router-dom";
 
 export const AddLevelForm = () => {
 
     const [code, setCode] = useState('');
     const [name, setName] = useState('');
+    const [isAdded, setIsAdded] = useState(false);
+    let [errorText, setErrorText] = useState('');
+
+    const lastLevelId = useAppSelector(selectLastLevelId);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(isAdded && lastLevelId) {
+            navigate(`/levels/${lastLevelId}`);
+        }
+    }, [isAdded]);
 
     const onCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCode(event.currentTarget.value);
@@ -24,7 +34,7 @@ export const AddLevelForm = () => {
         event.preventDefault();
 
         if(!(code && name)) {
-            alert('Can not save! Fill the fields!');
+            setErrorText('Can not save! Fill the required fields!');
             return;
         }
 
@@ -33,10 +43,11 @@ export const AddLevelForm = () => {
             name
         };
         try{
-            await dispatch(addLevel(newLevel)).unwrap();
+            dispatch(addLevel(newLevel)).then( _ => {
+                setIsAdded(true);
+            });
             setName('');
             setCode('');
-            //TODO navigate to added level page
         } catch (err) {
             console.error('Failed to save the level: ', err);
         }
@@ -49,8 +60,9 @@ export const AddLevelForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Add new level</h2>
+            {errorText && (<p className='input-error'>{errorText}</p>)}
             <form className='d-flex-column'>
-                <label className='mt-0 mb-1'>Code</label>
+                <label className='mt-0 mb-1 required'>Code</label>
                 <input
                     className='input-field'
                     type="text"
@@ -58,7 +70,7 @@ export const AddLevelForm = () => {
                     value={code}
                     onChange={onCodeChange}
                 ></input>
-                <label className='mt-2 mb-1'>Name</label>
+                <label className='mt-2 mb-1 required'>Name</label>
                 <input
                     className='input-field'
                     type="text"

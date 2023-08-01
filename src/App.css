@@ -225,3 +225,12 @@
 .height-100 {
   height: 100%;
 }
+
+.input-error {
+  color: #F50056;
+}
+
+.required:after {
+  content: "*";
+  color: #F50056;
+}

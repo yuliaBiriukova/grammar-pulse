@@ -1,10 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 
 import editIcon from "../../images/edit_icon.svg";
 import deleteIcon from "../../images/delete-icon.svg";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {deleteTopic, fetchTopicsByLevel, selectLevelsIds, selectTopicById} from "./topicsSlice";
+import {deleteTopic, fetchTopicsByLevel, selectLevelsIds, selectTopicById, selectTopicsIds} from "./topicsSlice";
 
 export const TopicPage = () => {
     const { levelId, topicId } = useParams();
@@ -12,13 +12,31 @@ export const TopicPage = () => {
         selectTopicById(state, parseInt(levelId as string), parseInt(topicId as string))
     );
     const levelsIds = useAppSelector(selectLevelsIds);
+    const topicsIds = useAppSelector(state => selectTopicsIds(state, parseInt(levelId as string)));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    if(levelsIds.length === 0) {
-        dispatch(fetchTopicsByLevel(parseInt(levelId as string)));
-    }
+    useEffect(() => {
+        if(!dispatch) {
+            return;
+        }
+
+        if(levelsIds.length === 0) {
+            dispatch(fetchTopicsByLevel(parseInt(levelId as string)));
+        }
+    }, [levelsIds.length, levelId]);
+
+    useEffect(() => {
+        if(!navigate) {
+            return;
+        }
+
+        if(!topicsIds.includes(parseInt(topicId as string))) {
+            navigate('/');
+            return;
+        }
+    }, [topicsIds, topicId]);
 
     const onDeleteClick = async () => {
         let isConfirm = window.confirm('Delete this topic?');

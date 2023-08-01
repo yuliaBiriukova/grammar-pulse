@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {EntityId} from "@reduxjs/toolkit";
 
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {deleteLevel, selectLevelById} from "./levelsSlice";
+import {deleteLevel, selectLevelById, selectLevelsIds} from "./levelsSlice";
 import {TopicsList} from "../topics/TopicsList";
 import deleteIcon from '../../images/delete-icon.svg';
 import editIcon from '../../images/edit_icon.svg';
@@ -12,9 +12,20 @@ export const LevelPage = () => {
     const {levelId} = useParams();
     
     const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+    const levelsIds = useAppSelector(selectLevelsIds);
     
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!navigate) {
+            return;
+        }
+        if(!levelsIds.includes(parseInt(levelId as string))) {
+            navigate('/');
+            return;
+        }
+    }, [levelId, levelsIds]);
 
     const onDeleteClick = async () => {
         let isConfirm = window.confirm('Delete this level?');
@@ -32,7 +43,7 @@ export const LevelPage = () => {
         <div className='content-container'>
             <div className='d-flex-align-start'>
                 <div className='d-flex align-self-center'>
-                    <h2 className='title'>{level?.code}: {level?.name}</h2>
+                    <h2 className='title mb-0'>{level?.code}: {level?.name}</h2>
                 </div>
                 <div className='d-flex'>
                     <Link to={`/topics/${level?.id}/new`} className='button-primary mr-3'>Add&nbsp;topic</Link>

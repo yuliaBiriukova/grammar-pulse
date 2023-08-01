@@ -11,6 +11,7 @@ export const EditLevelForm = () => {
 
     const [code, setCode] = useState(level?.code);
     const [name, setName] = useState(level?.name);
+    let [errorText, setErrorText] = useState('');
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -26,7 +27,15 @@ export const EditLevelForm = () => {
     const onSaveClicked = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        if(!(code && name && level?.id)) return;
+        if(!(code && name && level?.id)) {
+            setErrorText('Can not save! Fill the required fields!');
+            return;
+        }
+
+        if(name === level?.name && code === level.code) {
+            navigate(`/levels/${levelId}`);
+            return;
+        }
 
         try{
             await dispatch(editLevel({...level, code, name})).unwrap();
@@ -45,8 +54,9 @@ export const EditLevelForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Edit level</h2>
+            {errorText && (<p className='input-error'>{errorText}</p>)}
             <form className='d-flex-column'>
-                <label className='mt-3 mb-1'>Code</label>
+                <label className='mt-0 mb-1 required'>Code</label>
                 <input
                     className='input-field'
                     type="text"
@@ -55,7 +65,7 @@ export const EditLevelForm = () => {
                     onChange={onCodeChange}
                     required
                 ></input>
-                <label className='mt-2 mb-1'>Name</label>
+                <label className='mt-2 mb-1 required'>Name</label>
                 <input
                     className='input-field'
                     type="text"

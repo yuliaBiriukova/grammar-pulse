@@ -1,22 +1,31 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {EntityId} from "@reduxjs/toolkit";
 import {useNavigate, useParams} from "react-router-dom";
 import {Editor} from "@tinymce/tinymce-react";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectLevelById} from "../levels/levelsSlice";
 import {AddTopicModel} from "../models/AddTopicModel";
-import {addTopic} from "./topicsSlice";
+import {addTopic, selectLastLevelTopicId} from "./topicsSlice";
 
 export const AddTopicForm = () => {
 
     const { levelId } = useParams();
     const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+    const lastLevelTopicId = useAppSelector(state => selectLastLevelTopicId(state, level?.id as number));
 
+    let [errorText, setErrorText] = useState('');
+    const [isAdded, setIsAdded] = useState(false);
     const [name, setName] = useState('');
     const [content, setContent] = useState('');
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(isAdded && lastLevelTopicId) {
+            navigate(`/topics/${levelId}/${lastLevelTopicId}`);
+        }
+    }, [isAdded]);
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);
@@ -30,7 +39,7 @@ export const AddTopicForm = () => {
         event.preventDefault();
 
         if(!(name && content)) {
-            alert('Can not save! Fill the fields!');
+            setErrorText('Can not save! Fill the required fields!');
             return;
         }
 
@@ -42,10 +51,11 @@ export const AddTopicForm = () => {
         };
 
         try{
-            await dispatch(addTopic(newTopic)).unwrap();
+            dispatch(addTopic(newTopic)).then( _ => {
+                setIsAdded(true);
+            });
             setName('');
             setContent('');
-            navigate(`/levels/${levelId}`);
         } catch (err) {
             console.error('Failed to save the topic: ', err);
         }
@@ -58,8 +68,9 @@ export const AddTopicForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>{level?.code}:{level?.name} / Add new topic</h2>
+            {errorText && (<p className='input-error'>{errorText}</p>)}
             <form className='d-flex-column'>
-                <label className='mt-3 mb-1'>Name</label>
+                <label className='mt-0 mb-1 required'>Name</label>
                 <input
                     className='input-field'
                     type="text"
@@ -67,7 +78,7 @@ export const AddTopicForm = () => {
                     value={name}
                     onChange={onNameChange}
                 ></input>
-                <label className='mt-2 mb-1'>Content</label>
+                <label className='mt-2 mb-1 required'>Content</label>
                 <Editor
                     apiKey='0kqta6na3l4ynke5ryyjnqwj36f9565h9jdj7sf6qz2lhqpk'
                     onEditorChange={onContentChange}

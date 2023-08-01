@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from "@reduxjs/toolkit";
 import {Level} from "../models/Level";
 import {RootState} from "../../app/store";
 import {addLevelAsync, deleteLevelAsync, editLevelAsync, fetchLevelsAsync} from "./levelsApi";
@@ -79,3 +79,8 @@ export const {
     selectIds: selectLevelsIds,
     selectById: selectLevelById
 } = levelsAdapter.getSelectors<RootState>(state => state.levels);
+
+export const selectLastLevelId = createSelector(
+    selectLevelsIds,
+    levelsIds => levelsIds.at(-1)
+)

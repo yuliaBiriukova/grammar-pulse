@@ -13,11 +13,10 @@ export const EditTopicForm = () => {
 
     const [name, setName] = useState(topic?.name);
     const [content, setContent] = useState(topic?.content);
+    let [errorText, setErrorText] = useState('');
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
-    let [errorText, setErrorText] = useState('');
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);
@@ -31,8 +30,12 @@ export const EditTopicForm = () => {
         event.preventDefault();
 
         if(!(name && content)) {
-            setErrorText('Can not save! Fill the fields!');
-            /*alert('Can not save! Fill the fields!');*/
+            setErrorText('Can not save! Fill the required fields!');
+            return;
+        }
+
+        if(name === topic?.name && content === topic.content) {
+            navigate(`/topics/${levelId}/${topicId}`);
             return;
         }
 
@@ -53,9 +56,9 @@ export const EditTopicForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Edit topic</h2>
-            {errorText && (<p>{errorText}</p>)}
+            {errorText && (<p className='input-error'>{errorText}</p>)}
             <form className='d-flex-column'>
-                <label className='mt-3 mb-1'>Name</label>
+                <label className='mt-0 mb-1 required'>Name</label>
                 <input
                     className='input-field'
                     name='name'
@@ -65,7 +68,7 @@ export const EditTopicForm = () => {
                     onChange={onNameChange}
                     required
                 ></input>
-                <label className='mt-2 mb-1'>Content</label>
+                <label className='mt-2 mb-1 required'>Content</label>
                 <Editor
                     apiKey='0kqta6na3l4ynke5ryyjnqwj36f9565h9jdj7sf6qz2lhqpk'
                     onEditorChange={onContentChange}
