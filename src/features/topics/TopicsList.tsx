@@ -16,7 +16,7 @@ export const TopicsList = ({ levelId }: TopicsListProps) => {
         if (!levelsIds.includes(levelId)) {
             dispatch(fetchTopicsByLevel(levelId));
         }
-    }, [dispatch, levelId, levelsIds]);
+    }, [levelId, levelsIds]);
 
     let content;
 

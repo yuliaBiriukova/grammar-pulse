@@ -1,8 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
-
 import {useAppSelector} from "../../app/hooks";
-import {selectTopicById} from "./topicsSlice";
+import {selectTopicByIdAndLevelId} from "./topicsSlice";
 
 interface TopicProps {
     levelId: number;
@@ -10,7 +9,7 @@ interface TopicProps {
 }
 
 export const TopicListItem = ({levelId, topicId} : TopicProps) => {
-    const topic = useAppSelector(state => selectTopicById(state, levelId, topicId));
+    const topic = useAppSelector(state => selectTopicByIdAndLevelId(state, levelId, topicId));
 
     return (
         <li key={topic?.id} className='mt-1' >

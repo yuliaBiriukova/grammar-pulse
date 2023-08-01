@@ -1,14 +1,14 @@
 import React, {useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {editTopic, selectTopicById} from "./topicsSlice";
+import {editTopic, selectTopicByIdAndLevelId} from "./topicsSlice";
 import {Topic} from "../models/Topic";
 import {Editor} from "@tinymce/tinymce-react";
 
 export const EditTopicForm = () => {
     const {levelId, topicId} = useParams();
     const topic = useAppSelector(state =>
-        selectTopicById(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
 
     const [name, setName] = useState(topic?.name);

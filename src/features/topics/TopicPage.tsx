@@ -4,12 +4,12 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import editIcon from "../../images/edit_icon.svg";
 import deleteIcon from "../../images/delete-icon.svg";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {deleteTopic, fetchTopicsByLevel, selectLevelsIds, selectTopicById, selectTopicsIds} from "./topicsSlice";
+import {deleteTopic, fetchTopicsByLevel, selectLevelsIds, selectTopicByIdAndLevelId, selectTopicsIds} from "./topicsSlice";
 
 export const TopicPage = () => {
     const { levelId, topicId } = useParams();
     const topic = useAppSelector(state =>
-        selectTopicById(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
     const levelsIds = useAppSelector(selectLevelsIds);
     const topicsIds = useAppSelector(state => selectTopicsIds(state, parseInt(levelId as string)));
@@ -58,7 +58,7 @@ export const TopicPage = () => {
                     <h2 className='title'>{topic?.name}</h2>
                 </div>
                 <div className='d-flex'>
-                    <Link to={`/exercises/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
+                    <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
                     <Link to={`/`} className='button-primary mr-3'>Practice</Link>
                     <div className='d-flex'>
                         <Link to={`/topics/${levelId}/${topicId}/edit`} className='icon-button mr-1'>

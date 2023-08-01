@@ -107,9 +107,9 @@ const topicsSlice = createSlice({
 export default topicsSlice.reducer;
 
 export const {
-    selectAll: selectLevelsTopics,
     selectIds: selectLevelsIds,
-    selectById: selectTopicsByLevelId
+    selectById: selectTopicsByLevelId,
+    selectEntities: selectLevelsTopics
 } = topicsAdapter.getSelectors<RootState>(state => state.topics);
 
 export const selectTopicsIds = createSelector(
@@ -120,11 +120,23 @@ export const selectTopicsIds = createSelector(
         }
         return [];
     }
-)
+);
 
-export const selectTopicById = (state: RootState, levelId: number, topicId: number) => {
+export const selectTopicByIdAndLevelId = (state: RootState, levelId: number, topicId: number) => {
     return selectTopicsByLevelId(state, levelId)?.topics.find(topic => topic.id === topicId);
 }
+
+export const selectTopicById = (state: RootState, topicId: EntityId) => {
+    let topic: Topic | undefined;
+    Object.values(selectLevelsTopics).forEach(value => {
+        let foundTopic = value.topics.find((topic: Topic) => topic.id === topicId);
+        if(foundTopic) {
+            topic = foundTopic;
+        }
+    });
+    return topic;
+}
+
 
 export const selectLastLevelTopicId = (state: RootState, levelId: number) => {
     return selectTopicsByLevelId(state, levelId)?.topics.at(-1)?.id;
