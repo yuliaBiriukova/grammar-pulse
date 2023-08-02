@@ -53,9 +53,9 @@ export const TopicPage = () => {
 
     return (
         <div className='content-container'>
-            <div className='d-flex-align-start'>
+            <div className='d-flex-align-start mb-2'>
                 <div className='d-flex align-self-center'>
-                    <h2 className='title'>{topic?.name}</h2>
+                    <h2 className='title mb-0'>{topic?.name}</h2>
                 </div>
                 <div className='d-flex'>
                     <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
@@ -71,7 +71,7 @@ export const TopicPage = () => {
                 </div>
             </div>
             <span className='text-small mr-3'>version&nbsp;{topic?.version}</span>
-            <p className='mt-3' dangerouslySetInnerHTML={{ __html: topic?.content as string }}></p>
+            <p className='mt-3 mb-0' dangerouslySetInnerHTML={{ __html: topic?.content as string }}></p>
         </div>
     )
 }

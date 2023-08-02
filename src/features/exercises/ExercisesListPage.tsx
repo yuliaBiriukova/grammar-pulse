@@ -27,10 +27,13 @@ export const ExercisesListPage = () => {
         <div className='content-container'>
             <div className='d-flex-align-start'>
                 <div className='d-flex align-self-center'>
-                    <h2 className='title mb-0'>Exercises: {topic?.name}</h2>
+                    <h2 className='title mb-0'>
+                        <Link to={`/topics/${levelId}/${topicId}`} className='text-decoration-none'>{topic?.name}</Link>
+                        <span>&nbsp;/&nbsp;Exercises</span>
+                    </h2>
                 </div>
                 <div className='d-flex'>
-                    <Link to={`/exercises/${topic?.id}/new`} className='button-primary'>Add&nbsp;exercise</Link>
+                    <Link to={`/exercises/${levelId}/${topicId}/new`} className='button-primary'>Add&nbsp;exercise</Link>
                 </div>
             </div>
             <ExercisesList levelId={parseInt(levelId as string)} topicId={parseInt(topicId as string)}/>

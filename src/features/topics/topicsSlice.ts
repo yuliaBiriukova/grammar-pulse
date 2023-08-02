@@ -126,7 +126,7 @@ export const selectTopicByIdAndLevelId = (state: RootState, levelId: number, top
     return selectTopicsByLevelId(state, levelId)?.topics.find(topic => topic.id === topicId);
 }
 
-export const selectTopicById = (state: RootState, topicId: EntityId) => {
+/*export const selectTopicById = (state: RootState, topicId: EntityId) => {
     let topic: Topic | undefined;
     Object.values(selectLevelsTopics).forEach(value => {
         let foundTopic = value.topics.find((topic: Topic) => topic.id === topicId);
@@ -135,7 +135,7 @@ export const selectTopicById = (state: RootState, topicId: EntityId) => {
         }
     });
     return topic;
-}
+}*/
 
 
 export const selectLastLevelTopicId = (state: RootState, levelId: number) => {

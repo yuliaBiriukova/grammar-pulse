@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {EntityId} from "@reduxjs/toolkit";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {Editor} from "@tinymce/tinymce-react";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectLevelById} from "../levels/levelsSlice";
@@ -67,7 +67,10 @@ export const AddTopicForm = () => {
 
     return (
         <div className='content-container'>
-            <h2 className='title'>{level?.code}:{level?.name} / Add new topic</h2>
+            <h2 className='title'>
+                <Link to={`/levels/${levelId}`} className='text-decoration-none'>{level?.code}:{level?.name}</Link>
+                <span>&nbsp;/&nbsp;Add new topic</span>
+            </h2>
             {errorText && (<p className='input-error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Name</label>
@@ -97,14 +100,6 @@ export const AddTopicForm = () => {
                         content_style: 'body { font-family: Segoe UI, sans-serif; font-size:16px }'
                     }}
                 />
-{/*                <textarea
-                    id='html-editor'
-                    className='input-field text-area-field'
-                    placeholder='Enter content here'
-                    value={content}
-                    onChange={onContentChange}
-                    rows={10}
-                ></textarea>*/}
                 <div className='d-flex-end mt-3'>
                     <button type='button' className='button-secondary mr-2' onClick={onCancelClicked}>Cancel</button>
                     <button type='submit' className='button-primary' onClick={onSaveClicked}>Save</button>

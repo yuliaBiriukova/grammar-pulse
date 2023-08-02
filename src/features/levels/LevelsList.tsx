@@ -24,7 +24,7 @@ export const LevelsList = () => {
             <LeveListItem key={levelId} levelId={levelId}/>
         ));
     } else if(levelsStatus === 'failed') {
-        content = <div>Failed to load levels!</div>
+        content = <div className='no-word-wrap'>Failed to load levels!</div>
     }
 
     return (

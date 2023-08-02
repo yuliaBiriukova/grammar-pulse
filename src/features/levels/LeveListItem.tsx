@@ -7,7 +7,6 @@ import {Link    } from "react-router-dom";
 interface LevelProps {
     levelId: EntityId;
 }
-
 export const LeveListItem = ({levelId} : LevelProps) => {
     const level = useAppSelector(state => selectLevelById(state, levelId));
 

@@ -4,13 +4,23 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import editIcon from "../../images/edit_icon.svg";
 import deleteIcon from "../../images/delete-icon.svg";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchExercisesByTopic, selectExerciseById, selectExercisesIds, selectTopicsIds} from "./exercisesSlice";
+import {
+    deleteExercise,
+    fetchExercisesByTopic,
+    selectExerciseById,
+    selectExercisesIds,
+    selectTopicsIds
+} from "./exercisesSlice";
 import {ExerciseType} from "../models/ExerciseType";
+import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 
 export const ExercisePage = () => {
     const { levelId, topicId, exerciseId } = useParams();
     const exercise = useAppSelector(state =>
         selectExerciseById(state, parseInt(topicId as string), parseInt(exerciseId as string))
+    );
+    const topic = useAppSelector(state =>
+        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
     const topicsIds = useAppSelector(selectTopicsIds);
     const exercisesIds = useAppSelector(state => selectExercisesIds(state, parseInt(topicId as string)));
@@ -33,23 +43,23 @@ export const ExercisePage = () => {
             return;
         }
 
-        if(!exercisesIds.includes(parseInt(exerciseId as string))) {
+        // TODO exercisesIds is empty even if exercises were fetched
+/*        if(!exercisesIds.includes(parseInt(exerciseId as string))) {
             navigate('/');
             return;
-        }
+        }*/
     }, [exercisesIds, exerciseId]);
 
     const onDeleteClick = async () => {
-        /*let isConfirm = window.confirm('Delete this topic?');
-        if(topic && isConfirm) {
+        let isConfirm = window.confirm('Delete this exercise?');
+        if(exercise && isConfirm) {
             try{
-                await dispatch(deleteTopic([topic.id, topic.levelId]));
-                navigate(`/levels/${levelId}`);
+                await dispatch(deleteExercise([exercise.id, exercise.topicId]));
+                navigate(`/exercises/${levelId}/${topicId}`);
             } catch (err) {
-                console.error('Failed to delete the topic: ', err);
+                console.error('Failed to delete the exercise: ', err);
             }
-
-        }*/
+        }
     }
 
     return (
@@ -69,9 +79,15 @@ export const ExercisePage = () => {
                     </div>
                 </div>
             </div>
-            {exercise && (<p className='mt-3'>Type: {ExerciseType[exercise.type]}</p>)}
-            <p className='mt-2'>Ukrainian value: {exercise?.ukrainianValue}</p>
-            <p className='mt-2'>English value: {exercise?.englishValue}</p>
+            <h4 className='mt-3 mb-2'>
+                <span>Topic: </span>
+                <Link to={`/exercises/${levelId}/${topicId}`} className='text-decoration-none link'>{topic?.name}</Link>
+            </h4>
+            <div className='mt-3'>
+                {exercise && (<p>Type: {ExerciseType[exercise.type]}</p>)}
+                <p>Ukrainian value: {exercise?.ukrainianValue}</p>
+                <p className='mb-0'>English value: {exercise?.englishValue}</p>
+            </div>
         </div>
     )
 }

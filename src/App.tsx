@@ -13,6 +13,7 @@ import {TopicContainer} from "./features/containers/TopicContainer";
 import {EditTopicContainer} from "./features/containers/EditTopicContainer";
 import {ExercisesListContainer} from "./features/containers/ExercisesListContainer";
 import {ExerciseContainer} from "./features/containers/ExerciseContainer";
+import {AddExerciseContainer} from "./features/containers/AddExerciseContainer";
 
 function App() {
       return (
@@ -54,6 +55,10 @@ function App() {
                     <Route
                         path="exercises/:levelId/:topicId/:exerciseId"
                         element={ <ExerciseContainer /> }
+                    />
+                    <Route
+                        path="exercises/:levelId/:topicId/new"
+                        element={ <AddExerciseContainer /> }
                     />
                     <Route
                         path="*"

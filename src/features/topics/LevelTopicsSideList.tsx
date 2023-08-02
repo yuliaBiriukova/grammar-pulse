@@ -41,13 +41,13 @@ export const LevelTopicsSideList = () => {
         <div className='side-container'>
             <div className='d-flex'>
                 <Link to={`/levels/${levelId}`} className='cursor-pointer text-decoration-none'>
-                    <h2 className='side-list-title text-medium'>{level?.code}:&nbsp;{level?.name}</h2>
+                    <h2 className='side-list-title text-medium no-word-wrap'>{level?.code}:&nbsp;{level?.name}</h2>
                 </Link>
                 <Link to={`/topics/${levelId}/new`} className='icon-button ml-2'>
                     <img src={plusIcon} alt="plus_icon"/>
                 </Link>
             </div>
-            <ul className='list'>{content}</ul>
+            <ul className='list mt-2'>{content}</ul>
         </div>
     );
 }
