@@ -50,7 +50,7 @@ export const EditTopicForm = () => {
     }
 
     const onCancelClicked = () => {
-        navigate(-1);
+        navigate(`/topics/${levelId}/${topicId}`);
     }
 
     return (

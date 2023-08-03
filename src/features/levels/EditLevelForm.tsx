@@ -48,7 +48,7 @@ export const EditLevelForm = () => {
     }
 
     const onCancelClicked = () => {
-        navigate(-1);
+        navigate(`/levels/${levelId}`);
     }
 
     return (

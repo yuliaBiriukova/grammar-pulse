@@ -121,6 +121,7 @@
   background: #FF337A;
   border-radius: 8px;
   padding: 10px 24px;
+  cursor: pointer;
 }
 
 .button-primary:hover {
@@ -135,6 +136,7 @@
   padding: 8px 24px;
   border-radius: 8px;
   border: 1px solid #CCC;
+  cursor: pointer;
 }
 
 .button-secondary:hover {

@@ -36,7 +36,7 @@ export const AddExerciseForm = () => {
     }
 
     const onCancelClicked = () => {
-        navigate(-1);
+        navigate(`/exercises/${levelId}/${topicId}`);
     }
 
     const onSaveClicked = async (event: React.MouseEvent<HTMLButtonElement>) => {
