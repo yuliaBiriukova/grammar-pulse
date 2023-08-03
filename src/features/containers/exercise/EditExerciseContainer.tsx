@@ -1,6 +1,6 @@
 import React from "react";
-import {EditExerciseForm} from "../exercises/EditExerciseForm";
-import {LevelTopicsSideList} from "../topics/LevelTopicsSideList";
+import {EditExerciseForm} from "../../exercises/EditExerciseForm";
+import {LevelTopicsSideList} from "../../topics/LevelTopicsSideList";
 
 export const EditExerciseContainer = () => {
     return (

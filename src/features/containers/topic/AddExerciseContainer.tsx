@@ -1,6 +1,6 @@
 import React from "react";
-import {LevelTopicsSideList} from "../topics/LevelTopicsSideList";
-import {AddExerciseForm} from "../exercises/AddExerciseForm";
+import {LevelTopicsSideList} from "../../topics/LevelTopicsSideList";
+import {AddExerciseForm} from "../../exercises/AddExerciseForm";
 
 export const AddExerciseContainer = () => {
     return (

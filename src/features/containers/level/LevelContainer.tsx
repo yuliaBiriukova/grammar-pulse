@@ -1,6 +1,6 @@
 import React from "react";
-import {LevelsList} from "../levels/LevelsList";
-import {LevelPage} from "../levels/LevelPage";
+import {LevelsList} from "../../levels/LevelsList";
+import {LevelPage} from "../../levels/LevelPage";
 
 export const LevelContainer = () => {
     return (

@@ -3,16 +3,16 @@ import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom
 
 import {Navbar} from "./features/navbar/Navbar";
 import {HomeContainer} from "./features/containers/HomeContainer";
-import {LevelContainer} from "./features/containers/LevelContainer";
-import {AddLevelContainer} from "./features/containers/AddLevelContainer";
-import {EditLevelContainer} from "./features/containers/EditLevelContainer";
-import {AddTopicContainer} from "./features/containers/AddTopicContainer";
-import {TopicContainer} from "./features/containers/TopicContainer";
-import {EditTopicContainer} from "./features/containers/EditTopicContainer";
-import {ExercisesListContainer} from "./features/containers/ExercisesListContainer";
-import {ExerciseContainer} from "./features/containers/ExerciseContainer";
-import {AddExerciseContainer} from "./features/containers/AddExerciseContainer";
-import {EditExerciseContainer} from "./features/containers/EditExerciseContainer";
+import {LevelContainer} from "./features/containers/level/LevelContainer";
+import {AddLevelContainer} from "./features/containers/level/AddLevelContainer";
+import {EditLevelContainer} from "./features/containers/level/EditLevelContainer";
+import {AddTopicContainer} from "./features/containers/topic/AddTopicContainer";
+import {TopicContainer} from "./features/containers/topic/TopicContainer";
+import {EditTopicContainer} from "./features/containers/topic/EditTopicContainer";
+import {ExercisesListContainer} from "./features/containers/exercise/ExercisesListContainer";
+import {ExerciseContainer} from "./features/containers/exercise/ExerciseContainer";
+import {AddExerciseContainer} from "./features/containers/topic/AddExerciseContainer";
+import {EditExerciseContainer} from "./features/containers/exercise/EditExerciseContainer";
 
 import './App.css';
 
