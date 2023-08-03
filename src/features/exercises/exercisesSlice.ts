@@ -1,7 +1,7 @@
 import {createAsyncThunk, createEntityAdapter, createSelector, createSlice, EntityId} from "@reduxjs/toolkit";
 import {Exercise} from "../models/Exercise";
 import {RootState} from "../../app/store";
-import {addExerciseAsync, deleteExerciseAsync, fetchExercisesByTopicAsync} from "./exercisesApi";
+import {addExerciseAsync, deleteExerciseAsync, editExerciseAsync, fetchExercisesByTopicAsync} from "./exercisesApi";
 import {AddExerciseModel} from "../models/AddExerciseModel";
 
 interface ExercisesByTopic {
@@ -43,6 +43,14 @@ export const addExercise = createAsyncThunk(
     }
 );
 
+export const editExercise = createAsyncThunk(
+    'exercises/editExercise',
+    async (exercise: Exercise)=> {
+        await editExerciseAsync(exercise);
+        return exercise;
+    }
+);
+
 export const deleteExercise = createAsyncThunk(
     'exercises/deleteExercise',
     async (ids: [number, number])=> {
@@ -71,6 +79,18 @@ const exercisesSlice = createSlice({
             .addCase(addExercise.fulfilled, (state, action) => {
                 const { topicId } = action.payload;
                 state.entities[topicId]?.exercises.push(action.payload);
+            })
+            .addCase(editExercise.fulfilled, (state, action) => {
+                const newExercise  = action.payload;
+                const topicId = newExercise.topicId;
+                let exercises = [...state.entities[topicId]?.exercises ?? []];
+                const oldExercise = exercises.find(e => e.id === newExercise.id);
+                if(oldExercise) {
+                    let index = exercises.indexOf(oldExercise);
+                    exercises[index] = newExercise;
+                }
+                state.entities[topicId]?.exercises.splice(0, state.entities[topicId]?.exercises.length);
+                state.entities[topicId]?.exercises.push(...exercises);
             })
             .addCase(deleteExercise.fulfilled, (state, action) => {
                 const [exerciseId, topicId]  = action.payload;
