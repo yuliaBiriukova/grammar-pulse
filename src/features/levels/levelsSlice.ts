@@ -36,7 +36,7 @@ export const addLevel = createAsyncThunk(
 
 export const editLevel = createAsyncThunk(
     'levels/editLevel',
-    async (level : Level)=> {
+    async (level: Level)=> {
         await editLevelAsync(level);
         return level;
     }

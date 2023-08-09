@@ -12,7 +12,7 @@ export const LeveListItem = ({levelId} : LevelProps) => {
 
     return (
         <li key={level?.id} className='mt-2' >
-            <Link to={`/levels/${levelId}`} className='link no-word-wrap'>{level?.code}: {level?.name}</Link>
+            <Link to={`/levels/${levelId}`} className='link'>{level?.code}: {level?.name}</Link>
         </li>
     );
 }

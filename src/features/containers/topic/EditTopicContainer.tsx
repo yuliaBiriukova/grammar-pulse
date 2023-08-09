@@ -1,11 +1,11 @@
 import React from "react";
 import {EditTopicForm} from "../../topics/EditTopicForm";
-import {LevelTopicsSideList} from "../../topics/LevelTopicsSideList";
+import {TopicsSideList} from "../../topics/TopicsSideList";
 
 export const EditTopicContainer = () => {
     return (
         <div className="container">
-            <LevelTopicsSideList/>
+            <TopicsSideList/>
             <EditTopicForm/>
         </div>
     );

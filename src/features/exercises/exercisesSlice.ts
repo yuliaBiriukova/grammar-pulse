@@ -105,7 +105,7 @@ export default exercisesSlice.reducer;
 
 export const {
     selectAll: selectTopicsExercises,
-    selectIds: selectTopicsIds,
+    selectIds: selectTopicsWithExercisesIds,
     selectById: selectExercisesByTopicId
 } = exercisesAdapter.getSelectors<RootState>(state => state.exercises);
 
@@ -125,4 +125,12 @@ export const selectExerciseById = (state: RootState, topicId: number, exerciseId
 
 export const selectLastTopicExerciseId = (state: RootState, topicId: number) => {
     return selectExercisesByTopicId(state, topicId)?.exercises.at(-1)?.id;
+}
+
+export const selectExerciseByTopicIdAndIndex = (state: RootState, topicId: number, index: number) => {
+    return selectExercisesByTopicId(state, topicId)?.exercises.at(index - 1);
+}
+
+export const selectExercisesCountByTopicId = (state: RootState, topicId: number) => {
+    return selectExercisesByTopicId(state, topicId)?.exercises.length;
 }

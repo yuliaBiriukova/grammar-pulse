@@ -1,11 +1,11 @@
 import React from "react";
-import {LevelTopicsSideList} from "../../topics/LevelTopicsSideList";
+import {TopicsSideList} from "../../topics/TopicsSideList";
 import {ExercisesListPage} from "../../exercises/ExercisesListPage";
 
 export const ExercisesListContainer = () => {
     return (
         <div className="container">
-            <LevelTopicsSideList/>
+            <TopicsSideList/>
             <ExercisesListPage/>
         </div>
     );

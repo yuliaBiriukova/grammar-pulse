@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchExercisesByTopic, selectExercisesIds, selectTopicsIds} from "./exercisesSlice";
+import {fetchExercisesByTopic, selectExercisesIds, selectTopicsWithExercisesIds} from "./exercisesSlice";
 import {ExerciseListItem} from "./ExerciseListItem";
 
 interface ExercisesListProps {
@@ -10,7 +10,7 @@ interface ExercisesListProps {
 
 export const ExercisesList = ({ levelId, topicId }: ExercisesListProps) => {
     const dispatch = useAppDispatch();
-    const topicsIds = useAppSelector(selectTopicsIds);
+    const topicsIds = useAppSelector(selectTopicsWithExercisesIds);
     const exercisesIds = useAppSelector(state => selectExercisesIds(state, topicId));
     const exercisesStatus = useAppSelector(state => state.exercises.status);
 
