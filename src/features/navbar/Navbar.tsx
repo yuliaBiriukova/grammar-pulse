@@ -1,10 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import {testHref} from "../../common/constants";
+import {useAppSelector} from "../../app/hooks";
+import {selectIsAuthorized} from "../auth/authSlice";
 import logo from '../../images/logo.svg';
 import './Navbar.css';
-import {testHref} from "../../common/constants";
 
 export const Navbar = () => {
+    const isAuthorized = useAppSelector(selectIsAuthorized);
+
+    const onLogoutClick = async () => {
+        if(!isAuthorized) {
+            console.log(Error, 'User is not authorized!');
+            return;
+        }
+        localStorage.removeItem('userToken');
+        document.location.reload();
+    }
+
     return (
         <nav className='navbar'>
             <div className='d-flex-start-center'>
@@ -20,7 +33,15 @@ export const Navbar = () => {
                 <a href={testHref} className='button-secondary' >
                     Test&nbsp;your&nbsp;English
                 </a>
-                <div className='nav-link ml-4 cursor-pointer'>Log out</div>
+                {!isAuthorized && (
+                    <div>
+                        <Link to="/signup" className='nav-link ml-4'>Sign up</Link>
+                        <Link to="/login" className='nav-link ml-3'>Log in</Link>
+                    </div>
+                )}
+                {isAuthorized && (
+                    <div className='nav-link ml-4 cursor-pointer' onClick={onLogoutClick}>Log out</div>
+                )}
             </div>
         </nav>
     )

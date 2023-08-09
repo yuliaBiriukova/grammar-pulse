@@ -6,12 +6,15 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectLevelById} from "../levels/levelsSlice";
 import {AddTopicModel} from "../models/AddTopicModel";
 import {addTopic, selectLastLevelTopicId} from "./topicsSlice";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const AddTopicForm = () => {
 
     const { levelId } = useParams();
     const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
     const lastLevelTopicId = useAppSelector(state => selectLastLevelTopicId(state, level?.id as number));
+
+    const isAuthorized =useAppSelector(selectIsAuthorized);
 
     let [errorText, setErrorText] = useState('');
     const [isAdded, setIsAdded] = useState(false);
@@ -26,6 +29,12 @@ export const AddTopicForm = () => {
             navigate(`/topics/${levelId}/${lastLevelTopicId}`);
         }
     }, [isAdded]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized]);
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);
@@ -51,11 +60,13 @@ export const AddTopicForm = () => {
         };
 
         try{
-            dispatch(addTopic(newTopic)).then( _ => {
-                setIsAdded(true);
-            });
-            setName('');
-            setContent('');
+            if(isAuthorized) {
+                dispatch(addTopic(newTopic)).then( _ => {
+                    setIsAdded(true);
+                });
+                setName('');
+                setContent('');
+            }
         } catch (err) {
             console.error('Failed to save the topic: ', err);
         }
@@ -68,10 +79,10 @@ export const AddTopicForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>
-                <Link to={`/levels/${levelId}`} className='text-decoration-none'>{level?.code}:{level?.name}</Link>
+                <Link to={`/levels/${levelId}`} className='text-decoration-none'>{level?.code}: {level?.name}</Link>
                 <span>&nbsp;/&nbsp;Add new topic</span>
             </h2>
-            {errorText && (<p className='input-error'>{errorText}</p>)}
+            {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Name</label>
                 <input

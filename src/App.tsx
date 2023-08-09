@@ -13,7 +13,8 @@ import {ExercisesListContainer} from "./features/containers/exercise/ExercisesLi
 import {ExerciseContainer} from "./features/containers/exercise/ExerciseContainer";
 import {AddExerciseContainer} from "./features/containers/topic/AddExerciseContainer";
 import {EditExerciseContainer} from "./features/containers/exercise/EditExerciseContainer";
-
+import {LoginPage} from "./features/auth/LoginPage";
+import {SignUpPage} from "./features/auth/SignUpPage";
 import './App.css';
 
 function App() {
@@ -21,6 +22,14 @@ function App() {
             <Router>
                 <Navbar />
                 <Routes>
+                    <Route
+                        path="/signup"
+                        element={ <SignUpPage /> }
+                    />
+                    <Route
+                        path="/login"
+                        element={ <LoginPage /> }
+                    />
                     <Route
                         path="/"
                         element={ <HomeContainer /> }

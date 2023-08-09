@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
+import {Editor} from "@tinymce/tinymce-react";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {editTopic, selectTopicByIdAndLevelId} from "./topicsSlice";
 import {Topic} from "../models/Topic";
-import {Editor} from "@tinymce/tinymce-react";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const EditTopicForm = () => {
     const {levelId, topicId} = useParams();
@@ -11,12 +12,25 @@ export const EditTopicForm = () => {
         selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
 
+    const isAuthorized =useAppSelector(selectIsAuthorized);
+
     const [name, setName] = useState(topic?.name);
     const [content, setContent] = useState(topic?.content);
     let [errorText, setErrorText] = useState('');
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setName(topic?.name);
+        setContent(topic?.content);
+    }, [topic]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized]);
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);
@@ -40,10 +54,10 @@ export const EditTopicForm = () => {
         }
 
         try{
-            await dispatch(editTopic({...topic, name, content} as Topic)).unwrap();
-            setName('');
-            setContent('');
-            navigate(`/topics/${levelId}/${topicId}`);
+            if(isAuthorized) {
+                await dispatch(editTopic({...topic, name, content} as Topic)).unwrap();
+                navigate(`/topics/${levelId}/${topicId}`);
+            }
         } catch (err) {
             console.error('Failed to edit the level: ', err);
         }
@@ -56,7 +70,7 @@ export const EditTopicForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Edit topic</h2>
-            {errorText && (<p className='input-error'>{errorText}</p>)}
+            {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Name</label>
                 <input

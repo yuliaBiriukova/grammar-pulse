@@ -1,13 +1,16 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {EntityId} from "@reduxjs/toolkit";
 import {useNavigate, useParams} from "react-router-dom";
 
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {editLevel, selectLevelById} from "./levelsSlice";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const EditLevelForm = () => {
     const {levelId} = useParams();
     const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+
+    const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const [code, setCode] = useState(level?.code);
     const [name, setName] = useState(level?.name);
@@ -15,6 +18,17 @@ export const EditLevelForm = () => {
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setCode(level?.code);
+        setName(level?.name);
+    }, [level]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized]);
 
     const onCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCode(event.currentTarget.value);
@@ -38,10 +52,10 @@ export const EditLevelForm = () => {
         }
 
         try{
-            await dispatch(editLevel({...level, code, name})).unwrap();
-            setName('');
-            setCode('');
-            navigate(`/levels/${levelId}`);
+            if(isAuthorized) {
+                await dispatch(editLevel({...level, code, name})).unwrap();
+                navigate(`/levels/${levelId}`);
+            }
         } catch (err) {
             console.error('Failed to edit the level: ', err);
         }
@@ -54,7 +68,7 @@ export const EditLevelForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Edit level</h2>
-            {errorText && (<p className='input-error'>{errorText}</p>)}
+            {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Code</label>
                 <input

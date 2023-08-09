@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import {EntityId} from "@reduxjs/toolkit";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {editExercise, selectExerciseById} from "./exercisesSlice";
+import {editExercise, fetchExercisesByTopic, selectExerciseById, selectTopicsWithExercisesIds} from "./exercisesSlice";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 import {Exercise} from "../models/Exercise";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const EditExerciseForm = () => {
     const { levelId, topicId, exerciseId } = useParams();
@@ -14,6 +16,9 @@ export const EditExerciseForm = () => {
     const topic = useAppSelector(state =>
         selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
+    const topicsIds = useAppSelector(selectTopicsWithExercisesIds);
+
+    const isAuthorized = useAppSelector(selectIsAuthorized);
 
     let [errorText, setErrorText] = useState('');
     const [ukrainianValue, setUkrainianValue] = useState(exercise?.ukrainianValue);
@@ -21,6 +26,23 @@ export const EditExerciseForm = () => {
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setUkrainianValue(exercise?.ukrainianValue);
+        setEnglishValue(exercise?.englishValue);
+    }, [exercise]);
+
+    useEffect(() => {
+        if (!topicsIds.includes(topicId as EntityId)) {
+            dispatch(fetchExercisesByTopic(parseInt(topicId as string)));
+        }
+    }, [topicId, topicsIds]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized]);
 
     const onUkrainianValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUkrainianValue(event.currentTarget.value);
@@ -48,10 +70,10 @@ export const EditExerciseForm = () => {
         }
 
         try{
-            await dispatch(editExercise({...exercise, ukrainianValue, englishValue} as Exercise)).unwrap();
-            setUkrainianValue('');
-            setEnglishValue('');
-            navigate(`/exercises/${levelId}/${topicId}/${exerciseId}`);
+            if(isAuthorized) {
+                await dispatch(editExercise({...exercise, ukrainianValue, englishValue} as Exercise)).unwrap();
+                navigate(`/exercises/${levelId}/${topicId}/${exerciseId}`);
+            }
         } catch (err) {
             console.error('Failed to save the exercise: ', err);
         }
@@ -60,11 +82,11 @@ export const EditExerciseForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Edit exercise</h2>
-            <h4 className='mt-3 mb-2'>
+            <h4 className='mt-3 mb-3'>
                 <span>Topic: </span>
                 <Link to={`/exercises/${levelId}/${topicId}`} className='text-decoration-none link'>{topic?.name}</Link>
             </h4>
-            {errorText && (<p className='input-error'>{errorText}</p>)}
+            {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Ukrainian value</label>
                 <input

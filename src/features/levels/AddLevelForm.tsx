@@ -3,6 +3,7 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {AddLevelModel} from "../models/AddLevelModel";
 import {addLevel, selectLastLevelId} from "./levelsSlice";
 import {useNavigate} from "react-router-dom";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const AddLevelForm = () => {
 
@@ -12,6 +13,7 @@ export const AddLevelForm = () => {
     let [errorText, setErrorText] = useState('');
 
     const lastLevelId = useAppSelector(selectLastLevelId);
+    const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -21,6 +23,12 @@ export const AddLevelForm = () => {
             navigate(`/levels/${lastLevelId}`);
         }
     }, [isAdded]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized]);
 
     const onCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCode(event.currentTarget.value);
@@ -43,11 +51,13 @@ export const AddLevelForm = () => {
             name
         };
         try{
-            dispatch(addLevel(newLevel)).then( _ => {
-                setIsAdded(true);
-            });
-            setName('');
-            setCode('');
+            if(isAuthorized) {
+                dispatch(addLevel(newLevel)).then( _ => {
+                    setIsAdded(true);
+                });
+                setName('');
+                setCode('');
+            }
         } catch (err) {
             console.error('Failed to save the level: ', err);
         }
@@ -60,7 +70,7 @@ export const AddLevelForm = () => {
     return (
         <div className='content-container'>
             <h2 className='title'>Add new level</h2>
-            {errorText && (<p className='input-error'>{errorText}</p>)}
+            {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Code</label>
                 <input

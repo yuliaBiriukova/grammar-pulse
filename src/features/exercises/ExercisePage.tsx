@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 
 import editIcon from "../../images/edit_icon.svg";
@@ -9,10 +9,11 @@ import {
     fetchExercisesByTopic,
     selectExerciseById,
     selectExercisesIds,
-    selectTopicsIds
+    selectTopicsWithExercisesIds
 } from "./exercisesSlice";
 import {ExerciseType} from "../models/ExerciseType";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const ExercisePage = () => {
     const { levelId, topicId, exerciseId } = useParams();
@@ -22,8 +23,12 @@ export const ExercisePage = () => {
     const topic = useAppSelector(state =>
         selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
-    const topicsIds = useAppSelector(selectTopicsIds);
+    const topicsIds = useAppSelector(selectTopicsWithExercisesIds);
     const exercisesIds = useAppSelector(state => selectExercisesIds(state, parseInt(topicId as string)));
+
+    const isAuthorized = useAppSelector(selectIsAuthorized);
+
+    const [isFetched, setIsFetched] = useState(false);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -34,7 +39,9 @@ export const ExercisePage = () => {
         }
 
         if(topicsIds.length === 0) {
-            dispatch(fetchExercisesByTopic(parseInt(topicId as string)));
+            dispatch(fetchExercisesByTopic(parseInt(topicId as string))).then( _ => {
+                setIsFetched(true);
+            });
         }
     }, [topicsIds.length, topicId]);
 
@@ -43,19 +50,26 @@ export const ExercisePage = () => {
             return;
         }
 
-        // TODO exercisesIds is empty even if exercises were fetched
-/*        if(!exercisesIds.includes(parseInt(exerciseId as string))) {
+        if(!exercisesIds.includes(parseInt(exerciseId as string)) && isFetched) {
             navigate('/');
             return;
-        }*/
-    }, [exercisesIds, exerciseId]);
+        }
+    }, [isFetched, exercisesIds]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized])
 
     const onDeleteClick = async () => {
         let isConfirm = window.confirm('Delete this exercise?');
         if(exercise && isConfirm) {
             try{
-                await dispatch(deleteExercise([exercise.id, exercise.topicId]));
-                navigate(`/exercises/${levelId}/${topicId}`);
+                if(isAuthorized) {
+                    await dispatch(deleteExercise([exercise.id, exercise.topicId]));
+                    navigate(`/exercises/${levelId}/${topicId}`);
+                }
             } catch (err) {
                 console.error('Failed to delete the exercise: ', err);
             }

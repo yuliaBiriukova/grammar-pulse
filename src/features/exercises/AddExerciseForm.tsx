@@ -4,6 +4,7 @@ import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 import React, {useEffect, useState} from "react";
 import {AddExerciseModel} from "../models/AddExerciseModel";
 import {addExercise, selectLastTopicExerciseId} from "./exercisesSlice";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const AddExerciseForm = () => {
     const { levelId, topicId } = useParams();
@@ -12,6 +13,8 @@ export const AddExerciseForm = () => {
         selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
     const lastTopicExerciseId = useAppSelector(state => selectLastTopicExerciseId(state, topic?.id as number));
+
+    const isAuthorized = useAppSelector(selectIsAuthorized);
 
     let [errorText, setErrorText] = useState('');
     const [isAdded, setIsAdded] = useState(false);
@@ -26,6 +29,12 @@ export const AddExerciseForm = () => {
             navigate(`/exercises/${levelId}/${topicId}/${lastTopicExerciseId}`);
         }
     }, [isAdded]);
+
+    useEffect(() => {
+        if(!isAuthorized) {
+            navigate('/')
+        }
+    }, [isAuthorized]);
 
     const onUkrainianValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUkrainianValue(event.currentTarget.value);
@@ -55,11 +64,13 @@ export const AddExerciseForm = () => {
         }
 
         try{
-            dispatch(addExercise(newExercise)).then( _ => {
-                setIsAdded(true);
-            });
-            setUkrainianValue('');
-            setEnglishValue('');
+            if(isAuthorized) {
+                dispatch(addExercise(newExercise)).then( _ => {
+                    setIsAdded(true);
+                });
+                setUkrainianValue('');
+                setEnglishValue('');
+            }
         } catch (err) {
             console.error('Failed to save the exercise: ', err);
         }
@@ -72,13 +83,13 @@ export const AddExerciseForm = () => {
                 <Link to={`/exercises/${levelId}/${topicId}`} className='text-decoration-none'>{topic?.name}</Link>
                 <span>&nbsp;/&nbsp;Add new exercise</span>
             </h2>
-            {errorText && (<p className='input-error'>{errorText}</p>)}
+            {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>
                 <label className='mt-0 mb-1 required'>Ukrainian value</label>
                 <input
                     className='input-field'
                     type="text"
-                    placeholder='Enter content here'
+                    placeholder='Enter ukrainian value here'
                     value={ukrainianValue}
                     onChange={onUkrainianValueChange}
                 ></input>
@@ -86,7 +97,7 @@ export const AddExerciseForm = () => {
                 <input
                     className='input-field'
                     type="text"
-                    placeholder='Enter content here'
+                    placeholder='Enter english value here'
                     value={englishValue}
                     onChange={onEnglishValueChange}
                 ></input>

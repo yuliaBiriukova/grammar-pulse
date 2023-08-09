@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {useAppSelector} from "../../app/hooks";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 import {ExercisesList} from "./ExercisesList";
+import {selectIsAuthorized} from "../auth/authSlice";
 
 export const ExercisesListPage = () => {
     const {levelId, topicId} = useParams();
@@ -11,17 +12,15 @@ export const ExercisesListPage = () => {
         selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
     );
 
+    const isAuthorized = useAppSelector(selectIsAuthorized);
+
     const navigate = useNavigate();
 
-/*    useEffect(() => {
-        if(!navigate) {
-            return;
-        }
-        if(!topic) {
+    useEffect(() => {
+        if(!isAuthorized) {
             navigate('/');
-            return;
         }
-    }, [topic]);*/
+    }, [isAuthorized]);
 
     return (
         <div className='content-container'>

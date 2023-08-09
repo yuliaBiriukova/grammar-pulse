@@ -4,15 +4,18 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {fetchTopicsByLevel, selectLevelsIds, selectTopicsIds} from "./topicsSlice";
 import {TopicListItem} from "./TopicListItem";
 import {fetchLevels, selectLevelById} from "../levels/levelsSlice";
+import {selectIsAuthorized} from "../auth/authSlice";
 import plusIcon from '../../images/plus_icon.svg';
 
-export const LevelTopicsSideList = () => {
+export const TopicsSideList = () => {
     const { levelId } = useParams();
     const topicsIds = useAppSelector(state => selectTopicsIds(state, parseInt(levelId as string)));
     const levelsIds = useAppSelector(selectLevelsIds);
     const level = useAppSelector(state => selectLevelById(state, parseInt(levelId as string)));
     const topicsStatus = useAppSelector(state => state.topics.status);
     const levelsStatus = useAppSelector(state => state.levels.status);
+
+    const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const dispatch = useAppDispatch();
 
@@ -39,13 +42,17 @@ export const LevelTopicsSideList = () => {
 
     return (
         <div className='side-container'>
-            <div className='d-flex'>
-                <Link to={`/levels/${levelId}`} className='cursor-pointer text-decoration-none'>
-                    <h2 className='side-list-title text-medium no-word-wrap'>{level?.code}:&nbsp;{level?.name}</h2>
-                </Link>
-                <Link to={`/topics/${levelId}/new`} className='icon-button ml-2'>
-                    <img src={plusIcon} alt="plus_icon"/>
-                </Link>
+            <div className='d-flex-align-start'>
+                <div className='d-flex align-self-center'>
+                    <Link to={`/levels/${levelId}`} className='cursor-pointer text-decoration-none'>
+                        <h2 className='side-list-title text-medium'>{level?.code}:&nbsp;{level?.name}</h2>
+                    </Link>
+                </div>
+                {isAuthorized && (
+                    <Link to={`/topics/${levelId}/new`} className='icon-button ml-2'>
+                        <img src={plusIcon} alt="plus_icon"/>
+                    </Link>
+                )}
             </div>
             <ul className='list mt-2'>{content}</ul>
         </div>
