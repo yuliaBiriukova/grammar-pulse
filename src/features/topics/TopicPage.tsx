@@ -3,8 +3,18 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {deleteTopic, fetchTopicsByLevel, selectLevelsIds, selectTopicByIdAndLevelId, selectTopicsIds} from "./topicsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
+import {
+    fetchCompletedTopicByTopic,
+    selectCompletedTopicByTopicId,
+    selectCompletedTopicsIds
+} from "../practice/completedTopics/completedTopicsSlice";
 import editIcon from "../../images/edit_icon.svg";
 import deleteIcon from "../../images/delete-icon.svg";
+import {
+    fetchExercisesByTopic,
+    selectExercisesCountByTopicId,
+    selectTopicsWithExercisesIds
+} from "../exercises/exercisesSlice";
 
 export const TopicPage = () => {
     const { levelId, topicId } = useParams();
@@ -13,10 +23,16 @@ export const TopicPage = () => {
     );
     const levelsIds = useAppSelector(selectLevelsIds);
     const topicsIds = useAppSelector(state => selectTopicsIds(state, parseInt(levelId as string)));
+    const topicsWithExercisesIds = useAppSelector(selectTopicsWithExercisesIds);
+    const exercisesCount = useAppSelector(state =>
+        selectExercisesCountByTopicId(state, parseInt(topicId as string))
+    );
+    const completedTopicsIds = useAppSelector(selectCompletedTopicsIds);
+    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, parseInt(topicId as string)));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
-    const [isFetched, setIsFetched] = useState(false);
+    const [isTopicsFetched, setIsTopicsFetched] = useState(false);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -28,7 +44,7 @@ export const TopicPage = () => {
 
         if(levelsIds.length === 0) {
             dispatch(fetchTopicsByLevel(parseInt(levelId as string))).then( _ => {
-                setIsFetched(true);
+                setIsTopicsFetched(true);
             });
         }
     }, [levelsIds.length, levelId]);
@@ -38,11 +54,31 @@ export const TopicPage = () => {
             return;
         }
 
-        if(!topicsIds.includes(parseInt(topicId as string)) && isFetched) {
+        if(!topicsIds.includes(parseInt(topicId as string)) && isTopicsFetched) {
             navigate('/');
             return;
         }
-    }, [isFetched, topicsIds]);
+    }, [isTopicsFetched, topicsIds]);
+
+    useEffect(() => {
+        if(!dispatch) {
+            return;
+        }
+
+        if(!completedTopicsIds.includes(parseInt(topicId as string)) && isAuthorized) {
+            dispatch(fetchCompletedTopicByTopic(parseInt(topicId as string)));
+        }
+    }, [completedTopicsIds.length, topicId]);
+
+    useEffect(() => {
+        if(!dispatch) {
+            return;
+        }
+
+        if(!topicsWithExercisesIds.includes(parseInt(topicId as string))) {
+            dispatch(fetchExercisesByTopic(parseInt(topicId as string))).unwrap();
+        }
+    }, [topicsWithExercisesIds, topicId]);
 
     const onDeleteClick = async () => {
         let isConfirm = window.confirm('Delete this topic?');
@@ -67,7 +103,12 @@ export const TopicPage = () => {
                 {isAuthorized && (
                     <div className='d-flex'>
                         <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
-                        <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary mr-3'>Practice</Link>
+                        {!completedTopic && !!exercisesCount &&
+                            <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary mr-3'>Practice</Link>
+                        }
+                        {completedTopic && !!exercisesCount &&
+                            <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary mr-3'>Practice again</Link>
+                        }
                         <div className='d-flex'>
                             <Link to={`/topics/${levelId}/${topicId}/edit`} className='icon-button mr-1'>
                                 <img src={editIcon} alt="edit-icon"/>
@@ -84,7 +125,10 @@ export const TopicPage = () => {
                     </div>
                 )}
             </div>
-            {isAuthorized && <span className='text-small mr-3'>version&nbsp;{topic?.version}</span>}
+            {isAuthorized && <div>
+                <span className='text-small mr-3'>version&nbsp;{topic?.version}</span>
+                {completedTopic && <span className='text-small mr-3'>Practice result: {completedTopic.percentage}%</span> }
+            </div>}
             <p className='mt-3 mb-0' dangerouslySetInnerHTML={{ __html: topic?.content as string }}></p>
         </div>
     )

@@ -15,6 +15,8 @@ import {AddExerciseContainer} from "./features/containers/topic/AddExerciseConta
 import {EditExerciseContainer} from "./features/containers/exercise/EditExerciseContainer";
 import {LoginPage} from "./features/auth/LoginPage";
 import {SignUpPage} from "./features/auth/SignUpPage";
+import {PracticeContainer} from "./features/containers/practice/PracticeContainer";
+import {PracticeResultContainer} from "./features/containers/practice/PracticeResultContainer";
 import './App.css';
 
 function App() {
@@ -53,6 +55,14 @@ function App() {
                     <Route
                         path="topics/:levelId/:topicId"
                         element={ <TopicContainer /> }
+                    />
+                    <Route
+                        path="topics/:levelId/:topicId/practice/:index"
+                        element={ <PracticeContainer /> }
+                    />
+                    <Route
+                        path="topics/:levelId/:topicId/practice/results"
+                        element={ <PracticeResultContainer /> }
                     />
                     <Route
                         path="topics/:levelId/:topicId/edit"

@@ -11,13 +11,17 @@ export default class ApiHelper {
             headers.append('Authorization', `Bearer ${jwtToken}`);
         }
 
+        const queryParams = new URLSearchParams(params).toString();
+        const requestUrl = queryParams ? `${endpoint}?${queryParams}` : endpoint;
+
         const response = await fetch(
-            endpoint + new URLSearchParams({ ...params }), {
+            requestUrl, {
                 method: 'GET',
                 headers,
             }
         );
-        return response.json();
+        /*return response.json();*/
+        return (await ApiHelper.parseResponseData(response)) as Promise<any>;
     }
 
     public static async post<T>(url: string, model?: T) {
