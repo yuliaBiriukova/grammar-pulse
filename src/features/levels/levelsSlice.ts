@@ -75,7 +75,6 @@ const levelsSlice = createSlice({
 export default levelsSlice.reducer;
 
 export const {
-    selectAll: selectLevels,
     selectIds: selectLevelsIds,
     selectById: selectLevelById
 } = levelsAdapter.getSelectors<RootState>(state => state.levels);

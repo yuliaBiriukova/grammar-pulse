@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {deleteTopic, fetchTopicsByLevel, selectLevelsIds, selectTopicByIdAndLevelId, selectTopicsIds} from "./topicsSlice";
+import {deleteTopic, selectLevelsWithTopicsIds, selectTopicByIdAndLevelId, selectTopicsIds} from "./topicsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
 import {
     fetchCompletedTopicByTopic,
@@ -18,43 +18,38 @@ import {
 
 export const TopicPage = () => {
     const { levelId, topicId } = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
+
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
-    const levelsIds = useAppSelector(selectLevelsIds);
-    const topicsIds = useAppSelector(state => selectTopicsIds(state, parseInt(levelId as string)));
+    const levelsWithTopicsIds = useAppSelector(selectLevelsWithTopicsIds);
+    const topicsIds = useAppSelector(state => selectTopicsIds(state, intLevelId));
     const topicsWithExercisesIds = useAppSelector(selectTopicsWithExercisesIds);
     const exercisesCount = useAppSelector(state =>
-        selectExercisesCountByTopicId(state, parseInt(topicId as string))
+        selectExercisesCountByTopicId(state, intTopicId)
     );
     const completedTopicsIds = useAppSelector(selectCompletedTopicsIds);
-    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, parseInt(topicId as string)));
+    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, intTopicId));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
-    const [isTopicsFetched, setIsTopicsFetched] = useState(false);
+    const [isTopicsFetched, setIsTopicsFetched] = useState(levelsWithTopicsIds.includes(intLevelId));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!dispatch) {
-            return;
-        }
-
-        if(levelsIds.length === 0) {
-            dispatch(fetchTopicsByLevel(parseInt(levelId as string))).then( _ => {
-                setIsTopicsFetched(true);
-            });
-        }
-    }, [levelsIds.length, levelId]);
+        setIsTopicsFetched(levelsWithTopicsIds.includes(intLevelId));
+    }, [levelsWithTopicsIds]);
 
     useEffect(() => {
         if(!navigate) {
             return;
         }
 
-        if(!topicsIds.includes(parseInt(topicId as string)) && isTopicsFetched) {
+        if(!topicsIds.includes(intTopicId) && isTopicsFetched) {
             navigate('/');
             return;
         }
@@ -65,18 +60,18 @@ export const TopicPage = () => {
             return;
         }
 
-        if(!completedTopicsIds.includes(parseInt(topicId as string)) && isAuthorized) {
-            dispatch(fetchCompletedTopicByTopic(parseInt(topicId as string)));
+        if(!completedTopicsIds.includes(intTopicId) && isAuthorized) {
+            dispatch(fetchCompletedTopicByTopic(intTopicId));
         }
-    }, [completedTopicsIds.length, topicId]);
+    }, [completedTopicsIds, topicId]);
 
     useEffect(() => {
         if(!dispatch) {
             return;
         }
 
-        if(!topicsWithExercisesIds.includes(parseInt(topicId as string))) {
-            dispatch(fetchExercisesByTopic(parseInt(topicId as string))).unwrap();
+        if(!topicsWithExercisesIds.includes(intTopicId)) {
+            dispatch(fetchExercisesByTopic(intTopicId)).unwrap();
         }
     }, [topicsWithExercisesIds, topicId]);
 

@@ -14,7 +14,7 @@ const exercisesAdapter = createEntityAdapter<ExercisesByTopic>({
 });
 
 interface ExercisesState {
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    status: 'idle' | 'loading';
 }
 
 const initialState = exercisesAdapter.getInitialState<ExercisesState>({
@@ -71,10 +71,7 @@ const exercisesSlice = createSlice({
             })
             .addCase(fetchExercisesByTopic.fulfilled, (state, action) => {
                 exercisesAdapter.upsertOne(state, action);
-                state.status = 'succeeded';
-            })
-            .addCase(fetchExercisesByTopic.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = 'idle';
             })
             .addCase(addExercise.fulfilled, (state, action) => {
                 const { topicId } = action.payload;
@@ -104,7 +101,6 @@ const exercisesSlice = createSlice({
 export default exercisesSlice.reducer;
 
 export const {
-    selectAll: selectTopicsExercises,
     selectIds: selectTopicsWithExercisesIds,
     selectById: selectExercisesByTopicId
 } = exercisesAdapter.getSelectors<RootState>(state => state.exercises);

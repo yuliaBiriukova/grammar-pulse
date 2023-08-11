@@ -2,13 +2,6 @@ import {createEntityAdapter, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {Practice} from "../models/Practice";
 
-/*interface Practice {
-    topicId: number;
-    exercisesCount: number;
-    correctAnswersCount: number;
-    percentage: number;
-}*/
-
 const practicesAdapter = createEntityAdapter<Practice>({
     selectId: practice => practice.topicId,
 });

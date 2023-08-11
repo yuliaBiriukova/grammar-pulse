@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
-import {EntityId} from "@reduxjs/toolkit";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {deleteLevel, fetchLevels, selectLevelById, selectLevelsIds} from "./levelsSlice";
 import {TopicsList} from "../topics/TopicsList";
@@ -10,8 +9,9 @@ import editIcon from '../../images/edit_icon.svg';
 
 export const LevelPage = () => {
     const {levelId} = useParams();
-    
-    const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+    const intLevelId = parseInt(levelId as string);
+
+    const level = useAppSelector(state => selectLevelById(state, intLevelId));
     const levelsIds = useAppSelector(selectLevelsIds);
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
@@ -38,7 +38,7 @@ export const LevelPage = () => {
             return;
         }
 
-        if(!levelsIds.includes(parseInt(levelId as string)) && isFetched) {
+        if(!levelsIds.includes(intLevelId) && isFetched) {
             navigate('/');
             return;
         }
@@ -78,7 +78,7 @@ export const LevelPage = () => {
                     </div>
                 )}
             </div>
-            <TopicsList levelId={parseInt(levelId as string)}/>
+            <TopicsList levelId={intLevelId}/>
         </div>
     )
 }

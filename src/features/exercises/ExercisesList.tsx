@@ -22,7 +22,7 @@ export const ExercisesList = ({ levelId, topicId }: ExercisesListProps) => {
 
     let content;
 
-    if(exercisesStatus === 'succeeded'){
+    if(exercisesStatus === 'idle'){
         content = exercisesIds?.map(exerciseId => (
             <ExerciseListItem key={exerciseId} levelId={levelId} topicId={topicId} exerciseId={exerciseId}/>
         ));

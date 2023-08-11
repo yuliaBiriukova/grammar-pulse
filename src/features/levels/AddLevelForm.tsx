@@ -7,13 +7,13 @@ import {selectIsAuthorized} from "../auth/authSlice";
 
 export const AddLevelForm = () => {
 
+    const lastLevelId = useAppSelector(selectLastLevelId);
+    const isAuthorized = useAppSelector(selectIsAuthorized);
+
     const [code, setCode] = useState('');
     const [name, setName] = useState('');
     const [isAdded, setIsAdded] = useState(false);
     let [errorText, setErrorText] = useState('');
-
-    const lastLevelId = useAppSelector(selectLastLevelId);
-    const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();

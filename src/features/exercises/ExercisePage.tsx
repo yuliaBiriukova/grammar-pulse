@@ -17,14 +17,18 @@ import {selectIsAuthorized} from "../auth/authSlice";
 
 export const ExercisePage = () => {
     const { levelId, topicId, exerciseId } = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
+    const intExerciseId = parseInt(exerciseId as string);
+
     const exercise = useAppSelector(state =>
-        selectExerciseById(state, parseInt(topicId as string), parseInt(exerciseId as string))
+        selectExerciseById(state, intTopicId, intExerciseId)
     );
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
     const topicsIds = useAppSelector(selectTopicsWithExercisesIds);
-    const exercisesIds = useAppSelector(state => selectExercisesIds(state, parseInt(topicId as string)));
+    const exercisesIds = useAppSelector(state => selectExercisesIds(state, intTopicId));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
@@ -39,7 +43,7 @@ export const ExercisePage = () => {
         }
 
         if(topicsIds.length === 0) {
-            dispatch(fetchExercisesByTopic(parseInt(topicId as string))).then( _ => {
+            dispatch(fetchExercisesByTopic(intTopicId)).then( _ => {
                 setIsFetched(true);
             });
         }
@@ -50,7 +54,7 @@ export const ExercisePage = () => {
             return;
         }
 
-        if(!exercisesIds.includes(parseInt(exerciseId as string)) && isFetched) {
+        if(!exercisesIds.includes(intExerciseId) && isFetched) {
             navigate('/');
             return;
         }

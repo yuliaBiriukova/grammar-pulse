@@ -7,9 +7,11 @@ import {selectIsAuthorized} from "../auth/authSlice";
 
 export const ExercisesListPage = () => {
     const {levelId, topicId} = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
 
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
 
     const isAuthorized = useAppSelector(selectIsAuthorized);

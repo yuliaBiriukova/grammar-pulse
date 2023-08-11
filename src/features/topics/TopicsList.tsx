@@ -1,26 +1,28 @@
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchTopicsByLevel, selectLevelsIds, selectTopicsIds} from "./topicsSlice";
+import {fetchTopicsByLevel, selectLevelsWithTopicsIds, selectTopicsIds} from "./topicsSlice";
 import React, {useEffect} from "react";
 import {TopicListItem} from "./TopicListItem";
 
 interface TopicsListProps {
     levelId: number;
 }
+
 export const TopicsList = ({ levelId }: TopicsListProps) => {
-    const dispatch = useAppDispatch();
-    const levelsIds = useAppSelector(selectLevelsIds);
+    const levelsWithTopicsIds = useAppSelector(selectLevelsWithTopicsIds);
     const topicsIds = useAppSelector(state => selectTopicsIds(state, levelId));
     const topicsStatus = useAppSelector(state => state.topics.status);
 
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
-        if (!levelsIds.includes(levelId)) {
+        if (!levelsWithTopicsIds.includes(levelId)) {
             dispatch(fetchTopicsByLevel(levelId));
         }
-    }, [levelId, levelsIds]);
+    }, [levelId, levelsWithTopicsIds]);
 
     let content;
 
-    if(topicsStatus === 'succeeded'){
+    if(topicsStatus === 'idle'){
         content = topicsIds?.map(topicId => (
             <TopicListItem key={topicId} levelId={levelId} topicId={topicId}/>
         ));

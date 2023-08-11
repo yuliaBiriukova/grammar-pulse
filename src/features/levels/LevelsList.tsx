@@ -18,7 +18,7 @@ export const LevelsList = () => {
         if (levelsStatus === 'idle') {
             dispatch(fetchLevels());
         }
-    }, [levelsStatus, dispatch]);
+    }, [levelsStatus]);
 
     let content;
 

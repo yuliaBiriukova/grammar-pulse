@@ -8,8 +8,11 @@ import {selectIsAuthorized} from "../auth/authSlice";
 
 export const EditTopicForm = () => {
     const {levelId, topicId} = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
+
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
 
     const isAuthorized =useAppSelector(selectIsAuthorized);
@@ -101,13 +104,6 @@ export const EditTopicForm = () => {
                         content_style: 'body { font-family: Segoe UI, sans-serif; font-size:16px }'
                     }}
                 />
-{/*                <textarea
-                    className='input-field'
-                    placeholder='Enter content here'
-                    value={content}
-                    onChange={onContentChange}
-                    required
-                ></textarea>*/}
                 <div className='d-flex-end mt-3'>
                     <button type='button' className='button-secondary mr-2' onClick={onCancelClicked}>Cancel</button>
                     <button type='submit' className='button-primary' onClick={onSaveClicked}>Save</button>

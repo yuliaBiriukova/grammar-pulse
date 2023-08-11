@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Link, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchTopicsByLevel, selectLevelsIds, selectTopicsIds} from "./topicsSlice";
+import {fetchTopicsByLevel, selectLevelsWithTopicsIds, selectTopicsIds} from "./topicsSlice";
 import {TopicListItem} from "./TopicListItem";
 import {fetchLevels, selectLevelById} from "../levels/levelsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
@@ -9,9 +9,10 @@ import plusIcon from '../../images/plus_icon.svg';
 
 export const TopicsSideList = () => {
     const { levelId } = useParams();
-    const topicsIds = useAppSelector(state => selectTopicsIds(state, parseInt(levelId as string)));
-    const levelsIds = useAppSelector(selectLevelsIds);
-    const level = useAppSelector(state => selectLevelById(state, parseInt(levelId as string)));
+    const intLevelId = parseInt(levelId as string);
+    const topicsIds = useAppSelector(state => selectTopicsIds(state, intLevelId));
+    const levelsWithTopicsIds = useAppSelector(selectLevelsWithTopicsIds);
+    const level = useAppSelector(state => selectLevelById(state, intLevelId));
     const topicsStatus = useAppSelector(state => state.topics.status);
     const levelsStatus = useAppSelector(state => state.levels.status);
 
@@ -23,14 +24,17 @@ export const TopicsSideList = () => {
         if (levelsStatus === 'idle') {
             dispatch(fetchLevels());
         }
-        if(levelsIds.length === 0) {
-            dispatch(fetchTopicsByLevel(parseInt(levelId as string)));
+    }, [levelsStatus]);
+
+    useEffect(() => {
+        if(!levelsWithTopicsIds.includes(intLevelId) && topicsStatus === 'idle') {
+            dispatch(fetchTopicsByLevel(intLevelId));
         }
-    }, [levelsStatus, dispatch, levelsIds.length, levelId]);
+    }, [levelsWithTopicsIds, intLevelId, topicsStatus]);
 
     let content;
 
-    if(topicsStatus === 'succeeded' && level){
+    if(topicsStatus === 'idle' && level){
         content = topicsIds?.map(topicId => (
             <TopicListItem key={topicId} levelId={level.id} topicId={topicId}/>
         ));

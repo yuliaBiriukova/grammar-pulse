@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {EntityId} from "@reduxjs/toolkit";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {Editor} from "@tinymce/tinymce-react";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
@@ -11,8 +10,10 @@ import {selectIsAuthorized} from "../auth/authSlice";
 export const AddTopicForm = () => {
 
     const { levelId } = useParams();
-    const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
-    const lastLevelTopicId = useAppSelector(state => selectLastLevelTopicId(state, level?.id as number));
+    const intLevelId = parseInt(levelId as string);
+
+    const level = useAppSelector(state => selectLevelById(state, intLevelId));
+    const lastLevelTopicId = useAppSelector(state => selectLastLevelTopicId(state, intLevelId));
 
     const isAuthorized =useAppSelector(selectIsAuthorized);
 
@@ -55,7 +56,7 @@ export const AddTopicForm = () => {
         const newTopic: AddTopicModel = {
             name,
             content,
-            levelId: level?.id as number,
+            levelId: intLevelId,
             version: 1
         };
 

@@ -8,11 +8,13 @@ import {selectIsAuthorized} from "../auth/authSlice";
 
 export const AddExerciseForm = () => {
     const { levelId, topicId } = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
 
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
-    const lastTopicExerciseId = useAppSelector(state => selectLastTopicExerciseId(state, topic?.id as number));
+    const lastTopicExerciseId = useAppSelector(state => selectLastTopicExerciseId(state, intTopicId));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
@@ -57,7 +59,7 @@ export const AddExerciseForm = () => {
         }
 
         const newExercise : AddExerciseModel = {
-            topicId: parseInt(topicId as string),
+            topicId: intTopicId,
             type: 1,
             ukrainianValue,
             englishValue

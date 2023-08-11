@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {EntityId} from "@reduxjs/toolkit";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {editExercise, fetchExercisesByTopic, selectExerciseById, selectTopicsWithExercisesIds} from "./exercisesSlice";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
@@ -9,12 +8,15 @@ import {selectIsAuthorized} from "../auth/authSlice";
 
 export const EditExerciseForm = () => {
     const { levelId, topicId, exerciseId } = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
+    const intExerciseId = parseInt(exerciseId as string);
 
     const exercise = useAppSelector(state =>
-        selectExerciseById(state, parseInt(topicId as string), parseInt(exerciseId as string))
+        selectExerciseById(state, intTopicId, intExerciseId)
     );
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
     const topicsIds = useAppSelector(selectTopicsWithExercisesIds);
 
@@ -33,8 +35,8 @@ export const EditExerciseForm = () => {
     }, [exercise]);
 
     useEffect(() => {
-        if (!topicsIds.includes(topicId as EntityId)) {
-            dispatch(fetchExercisesByTopic(parseInt(topicId as string)));
+        if (!topicsIds.includes(intTopicId)) {
+            dispatch(fetchExercisesByTopic(intTopicId));
         }
     }, [topicId, topicsIds]);
 

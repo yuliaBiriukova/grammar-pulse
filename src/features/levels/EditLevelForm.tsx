@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {EntityId} from "@reduxjs/toolkit";
 import {useNavigate, useParams} from "react-router-dom";
-
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {editLevel, selectLevelById} from "./levelsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
 
 export const EditLevelForm = () => {
     const {levelId} = useParams();
-    const level = useAppSelector(state => selectLevelById(state, levelId as EntityId));
+    const intLevelId = parseInt(levelId as string);
+
+    const level = useAppSelector(state => selectLevelById(state, intLevelId));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 

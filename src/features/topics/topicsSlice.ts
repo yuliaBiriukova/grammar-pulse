@@ -14,7 +14,7 @@ const topicsAdapter = createEntityAdapter<TopicsByLevel>({
 });
 
 interface TopicsState {
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    status: 'idle' | 'loading';
 }
 
 const initialState = topicsAdapter.getInitialState<TopicsState>({
@@ -74,10 +74,7 @@ const topicsSlice = createSlice({
             })
             .addCase(fetchTopicsByLevel.fulfilled, (state, action) => {
                 topicsAdapter.upsertOne(state, action);
-                state.status = 'succeeded';
-            })
-            .addCase(fetchTopicsByLevel.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = 'idle';
             })
             .addCase(addTopic.fulfilled, (state, action) => {
                 const { levelId} = action.payload;
@@ -107,9 +104,8 @@ const topicsSlice = createSlice({
 export default topicsSlice.reducer;
 
 export const {
-    selectIds: selectLevelsIds,
+    selectIds: selectLevelsWithTopicsIds,
     selectById: selectTopicsByLevelId,
-    selectEntities: selectLevelsTopics
 } = topicsAdapter.getSelectors<RootState>(state => state.topics);
 
 export const selectTopicsIds = createSelector(
@@ -125,18 +121,6 @@ export const selectTopicsIds = createSelector(
 export const selectTopicByIdAndLevelId = (state: RootState, levelId: number, topicId: number) => {
     return selectTopicsByLevelId(state, levelId)?.topics.find(topic => topic.id === topicId);
 }
-
-/*export const selectTopicById = (state: RootState, topicId: EntityId) => {
-    let topic: Topic | undefined;
-    Object.values(selectLevelsTopics).forEach(value => {
-        let foundTopic = value.topics.find((topic: Topic) => topic.id === topicId);
-        if(foundTopic) {
-            topic = foundTopic;
-        }
-    });
-    return topic;
-}*/
-
 
 export const selectLastLevelTopicId = (state: RootState, levelId: number) => {
     return selectTopicsByLevelId(state, levelId)?.topics.at(-1)?.id;
