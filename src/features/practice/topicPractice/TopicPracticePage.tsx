@@ -1,56 +1,55 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
+import {selectTopicByIdAndLevelId} from "../../topics/topicsSlice";
 import {
     fetchExercisesByTopic,
     selectExerciseByTopicIdAndIndex,
     selectExercisesCountByTopicId,
     selectTopicsWithExercisesIds
-} from "../exercises/exercisesSlice";
+} from "../../exercises/exercisesSlice";
 import {
     addCorrectAnswer,
     addPractice,
     selectPracticeByTopicId,
     selectTopicsWithPracticesIds,
     updatePractice
-} from "./practiceSlice";
-import {EntityId} from "@reduxjs/toolkit";
-import {Practice} from "../models/Practice";
+} from "../practiceSlice";
+import {Practice} from "../../models/Practice";
 import {
     addCompletedTopic,
     editCompletedTopic,
     selectCompletedTopicByTopicId
-} from "./completedTopics/completedTopicsSlice";
-import {selectIsAuthorized} from "../auth/authSlice";
-import {AddCompletedTopicModel} from "../models/AddCompletedTopicModel";
-import {CompletedTopic} from "../models/CompletedTopic";
+} from "../completedTopics/completedTopicsSlice";
+import {selectIsAuthorized} from "../../auth/authSlice";
+import {AddCompletedTopicModel} from "../../models/AddCompletedTopicModel";
+import {CompletedTopic} from "../../models/CompletedTopic";
 
-export const PracticePage = () => {
-
+export const TopicPracticePage = () => {
     const { levelId, topicId, index } = useParams();
-
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
     let exerciseIndex = parseInt(index as string);
 
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
     const exercise = useAppSelector(state =>
-        selectExerciseByTopicIdAndIndex(state, parseInt(topicId as string), exerciseIndex)
+        selectExerciseByTopicIdAndIndex(state, intTopicId, exerciseIndex)
     );
     const topicsWithPracticesIds =  useAppSelector(selectTopicsWithPracticesIds);
     const exercisesCount = useAppSelector(state =>
-        selectExercisesCountByTopicId(state, parseInt(topicId as string))
+        selectExercisesCountByTopicId(state, intTopicId)
     );
     const topicsWithExercisesIds = useAppSelector(selectTopicsWithExercisesIds);
-    const practice = useAppSelector(state => selectPracticeByTopicId(state, topicId as EntityId));
-    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, parseInt(topicId as string)));
+    const practice = useAppSelector(state => selectPracticeByTopicId(state, intTopicId));
+    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, intTopicId));
     const isAuthorized =useAppSelector(selectIsAuthorized);
 
     const [answer, setAnswer] = useState('');
     const [errorText, setErrorText] = useState('');
     const [isCorrect, setIsCorrect] = useState(false);
-    const [isExercisesFetched, setIsExercisesFetched] = useState(topicsWithExercisesIds.includes(parseInt(topicId as string)));
+    const [isExercisesFetched, setIsExercisesFetched] = useState(topicsWithExercisesIds.includes(intTopicId));
     const [isChecked, setIsChecked] = useState(false);
     const [isLast, setIsLast] = useState(exerciseIndex === exercisesCount);
 
@@ -58,17 +57,23 @@ export const PracticePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if(!exercisesCount || exerciseIndex > exercisesCount) {
+            navigate("/");
+        }
+    }, [exercisesCount]);
+
+    useEffect(() => {
         if(!dispatch) {
             return;
         }
 
-        if(topicsWithPracticesIds.includes(parseInt(topicId as string)) && practice?.percentage !== 0) {
+        if(topicsWithPracticesIds.includes(intTopicId) && practice?.percentage !== 0) {
             dispatch(updatePractice({...practice, percentage: 0, correctAnswersCount: 0} as Practice));
         }
 
-        if(!topicsWithPracticesIds.includes(parseInt(topicId as string)) && isExercisesFetched) {
+        if(!topicsWithPracticesIds.includes(intTopicId) && isExercisesFetched) {
             const newPractice: Practice = {
-                topicId: parseInt(topicId as string),
+                topicId: intTopicId,
                 exercisesCount: exercisesCount as number,
                 correctAnswersCount: 0,
                 percentage: 0
@@ -84,7 +89,7 @@ export const PracticePage = () => {
         }
 
         if(!isExercisesFetched) {
-            dispatch(fetchExercisesByTopic(parseInt(topicId as string))).then( _ => {
+            dispatch(fetchExercisesByTopic(intTopicId)).then( _ => {
                 setIsExercisesFetched(true);
             });
         }
@@ -110,7 +115,7 @@ export const PracticePage = () => {
 
         if(answer === exercise?.englishValue) {
             setIsCorrect(true);
-            dispatch(addCorrectAnswer(topicId as EntityId));
+            dispatch(addCorrectAnswer(intTopicId));
         }
     }
 

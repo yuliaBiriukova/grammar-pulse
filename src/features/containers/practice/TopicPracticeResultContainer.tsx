@@ -1,12 +1,12 @@
 import React from "react";
 import {TopicsSideList} from "../../topics/TopicsSideList";
-import {PracticeResult} from "../../practice/PracticeResult";
+import {TopicPracticeResult} from "../../practice/topicPractice/TopicPracticeResult";
 
-export const PracticeResultContainer = () => {
+export const TopicPracticeResultContainer = () => {
     return (
         <div className="container">
             <TopicsSideList />
-            <PracticeResult />
+            <TopicPracticeResult />
         </div>
     );
 }

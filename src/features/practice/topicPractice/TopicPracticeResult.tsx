@@ -1,16 +1,26 @@
-import React from "react";
-import {Link, useParams} from "react-router-dom";
-import {useAppSelector} from "../../app/hooks";
-import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
-import {selectCompletedTopicByTopicId} from "./completedTopics/completedTopicsSlice";
+import React, {useEffect} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {useAppSelector} from "../../../app/hooks";
+import {selectTopicByIdAndLevelId} from "../../topics/topicsSlice";
+import {selectCompletedTopicByTopicId} from "../completedTopics/completedTopicsSlice";
 
-export const PracticeResult = () => {
+export const TopicPracticeResult = () => {
     const { levelId, topicId} = useParams();
+    const intLevelId = parseInt(levelId as string);
+    const intTopicId = parseInt(topicId as string);
 
     const topic = useAppSelector(state =>
-        selectTopicByIdAndLevelId(state, parseInt(levelId as string), parseInt(topicId as string))
+        selectTopicByIdAndLevelId(state, intLevelId, intTopicId)
     );
-    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, parseInt(topicId as string)));
+    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, intTopicId));
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!completedTopic) {
+            navigate("/");
+        }
+    }, [completedTopic]);
 
     return (
         <div className='content-container'>

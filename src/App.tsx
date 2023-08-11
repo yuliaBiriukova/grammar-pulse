@@ -15,8 +15,8 @@ import {AddExerciseContainer} from "./features/containers/topic/AddExerciseConta
 import {EditExerciseContainer} from "./features/containers/exercise/EditExerciseContainer";
 import {LoginPage} from "./features/auth/LoginPage";
 import {SignUpPage} from "./features/auth/SignUpPage";
-import {PracticeContainer} from "./features/containers/practice/PracticeContainer";
-import {PracticeResultContainer} from "./features/containers/practice/PracticeResultContainer";
+import {TopicPracticeContainer} from "./features/containers/practice/TopicPracticeContainer";
+import {TopicPracticeResultContainer} from "./features/containers/practice/TopicPracticeResultContainer";
 import './App.css';
 
 function App() {
@@ -58,11 +58,11 @@ function App() {
                     />
                     <Route
                         path="topics/:levelId/:topicId/practice/:index"
-                        element={ <PracticeContainer /> }
+                        element={ <TopicPracticeContainer /> }
                     />
                     <Route
                         path="topics/:levelId/:topicId/practice/results"
-                        element={ <PracticeResultContainer /> }
+                        element={ <TopicPracticeResultContainer /> }
                     />
                     <Route
                         path="topics/:levelId/:topicId/edit"
