@@ -18,8 +18,7 @@ import {
 import {Practice} from "../../models/Practice";
 import {
     addCompletedTopic,
-    editCompletedTopic,
-    selectCompletedTopicByTopicId
+    editCompletedTopic, selectCompletedTopicByLevelIdAndTopicId,
 } from "../completedTopics/completedTopicsSlice";
 import {selectIsAuthorized} from "../../auth/authSlice";
 import {AddCompletedTopicModel} from "../../models/AddCompletedTopicModel";
@@ -43,7 +42,7 @@ export const TopicPracticePage = () => {
     );
     const topicsWithExercisesIds = useAppSelector(selectTopicsWithExercisesIds);
     const practice = useAppSelector(state => selectPracticeByTopicId(state, intTopicId));
-    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, intTopicId));
+    const completedTopic = useAppSelector(state => selectCompletedTopicByLevelIdAndTopicId(state, intLevelId, intTopicId));
     const isAuthorized =useAppSelector(selectIsAuthorized);
 
     const [answer, setAnswer] = useState('');
@@ -134,13 +133,19 @@ export const TopicPracticePage = () => {
                     topicId: practice.topicId,
                     percentage: practice.percentage
                 }
-                await dispatch(addCompletedTopic(newCompletedTopic));
+                await dispatch(addCompletedTopic({
+                    levelId: intLevelId,
+                    newCompletedTopic
+                }));
             } else {
                 const completedTopicToUpdate: CompletedTopic = {
                     ...completedTopic,
                     percentage: practice.percentage
                 }
-                await dispatch(editCompletedTopic(completedTopicToUpdate));
+                await dispatch(editCompletedTopic({
+                    levelId: intLevelId,
+                    completedTopic: completedTopicToUpdate
+                }));
             }
         }
     }

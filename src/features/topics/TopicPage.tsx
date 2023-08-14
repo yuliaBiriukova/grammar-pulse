@@ -4,8 +4,7 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {deleteTopic, selectLevelsWithTopicsIds, selectTopicByIdAndLevelId, selectTopicsIds} from "./topicsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
 import {
-    fetchCompletedTopicByTopic,
-    selectCompletedTopicByTopicId,
+    fetchCompletedTopicByTopic, selectCompletedTopicByLevelIdAndTopicId,
     selectCompletedTopicsIds
 } from "../practice/completedTopics/completedTopicsSlice";
 import editIcon from "../../images/edit_icon.svg";
@@ -30,8 +29,8 @@ export const TopicPage = () => {
     const exercisesCount = useAppSelector(state =>
         selectExercisesCountByTopicId(state, intTopicId)
     );
-    const completedTopicsIds = useAppSelector(selectCompletedTopicsIds);
-    const completedTopic = useAppSelector(state => selectCompletedTopicByTopicId(state, intTopicId));
+    const completedTopicsIds = useAppSelector(state => selectCompletedTopicsIds(state, intLevelId));
+    const completedTopic = useAppSelector(state => selectCompletedTopicByLevelIdAndTopicId(state, intLevelId, intTopicId));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
@@ -61,7 +60,10 @@ export const TopicPage = () => {
         }
 
         if(!completedTopicsIds.includes(intTopicId) && isAuthorized) {
-            dispatch(fetchCompletedTopicByTopic(intTopicId));
+            dispatch(fetchCompletedTopicByTopic({
+                levelId: intLevelId,
+                topicId: intTopicId
+            }));
         }
     }, [completedTopicsIds, topicId]);
 

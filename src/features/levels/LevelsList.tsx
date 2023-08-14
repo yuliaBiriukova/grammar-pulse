@@ -15,10 +15,10 @@ export const LevelsList = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (levelsStatus === 'idle') {
+        if(!levelsIds.length) {
             dispatch(fetchLevels());
         }
-    }, [levelsStatus]);
+    }, [levelsIds.length]);
 
     let content;
 

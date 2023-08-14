@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {deleteLevel, fetchLevels, selectLevelById, selectLevelsIds} from "./levelsSlice";
+import {deleteLevel, selectLevelById, selectLevelsIds} from "./levelsSlice";
 import {TopicsList} from "../topics/TopicsList";
 import {selectIsAuthorized} from "../auth/authSlice";
 import deleteIcon from '../../images/delete-icon.svg';
@@ -13,36 +13,18 @@ export const LevelPage = () => {
 
     const level = useAppSelector(state => selectLevelById(state, intLevelId));
     const levelsIds = useAppSelector(selectLevelsIds);
+    const levelsStatus = useAppSelector(state => state.levels.status);
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
-
-    const [isFetched, setIsFetched] = useState(false);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!dispatch) {
-            return;
-        }
-
-        if(levelsIds.length === 0) {
-            dispatch(fetchLevels()).then( _ => {
-                setIsFetched(true);
-            });
-        }
-    }, [levelsIds.length, levelId]);
-
-    useEffect(() => {
-        if(!navigate) {
-            return;
-        }
-
-        if(!levelsIds.includes(intLevelId) && isFetched) {
+        if(!levelsIds.includes(intLevelId) && levelsStatus === 'succeeded') {
             navigate('/');
-            return;
         }
-    }, [isFetched, levelId, levelsIds]);
+    }, [levelsIds, levelId, levelsStatus]);
 
     const onDeleteClick = async () => {
         let isConfirm = window.confirm('Delete this level?');
@@ -66,6 +48,7 @@ export const LevelPage = () => {
                 </div>
                 {isAuthorized && (
                     <div className='d-flex'>
+                        <Link to={`/practice/${levelId}`} className='button-secondary mr-3'>Practice&nbsp;results</Link>
                         <Link to={`/topics/${level?.id}/new`} className='button-primary mr-3'>Add&nbsp;topic</Link>
                         <div className='d-flex'>
                             <Link to={`/levels/${level?.id}/edit`} className='icon-button mr-1'>
