@@ -17,7 +17,9 @@ import {LoginPage} from "./features/auth/LoginPage";
 import {SignUpPage} from "./features/auth/SignUpPage";
 import {TopicPracticeContainer} from "./features/containers/practice/TopicPracticeContainer";
 import {TopicPracticeResultContainer} from "./features/containers/practice/TopicPracticeResultContainer";
+import {PracticeResultsStartPage} from "./features/practice/levelPractice/PracticeResultsStartPage";
 import './App.css';
+import {LevelPracticeResultsContainer} from "./features/containers/practice/LevelPracticeResultsContainer";
 
 function App() {
       return (
@@ -83,6 +85,14 @@ function App() {
                     <Route
                         path="exercises/:levelId/:topicId/:exerciseId/edit"
                         element={ <EditExerciseContainer /> }
+                    />
+                    <Route
+                        path="practice"
+                        element={ <PracticeResultsStartPage /> }
+                    />
+                    <Route
+                        path="practice/:levelId"
+                        element={ <LevelPracticeResultsContainer /> }
                     />
                     <Route
                         path="*"

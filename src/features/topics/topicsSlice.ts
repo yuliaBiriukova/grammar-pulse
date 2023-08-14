@@ -125,3 +125,7 @@ export const selectTopicByIdAndLevelId = (state: RootState, levelId: number, top
 export const selectLastLevelTopicId = (state: RootState, levelId: number) => {
     return selectTopicsByLevelId(state, levelId)?.topics.at(-1)?.id;
 }
+
+export const selectTopicsStatus = (state: RootState) => {
+    return state.topics.status;
+}

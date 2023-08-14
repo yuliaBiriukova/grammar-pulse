@@ -1,38 +1,76 @@
-import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from "@reduxjs/toolkit";
 import {CompletedTopic} from "../../models/CompletedTopic";
 import {RootState} from "../../../app/store";
-import {addCompletedTopicAsync, editCompletedTopicAsync, fetchCompletedTopicByTopicIdAsync} from "./completedTopicsApi";
+import {
+    addCompletedTopicAsync,
+    editCompletedTopicAsync,
+    fetchCompletedTopicByLevelIdAsync,
+    fetchCompletedTopicByTopicIdAsync
+} from "./completedTopicsApi";
 import {AddCompletedTopicModel} from "../../models/AddCompletedTopicModel";
 
-const completedTopicsAdapter = createEntityAdapter<CompletedTopic>({
-    selectId: completedTopic => completedTopic.topicId,
+interface CompletedTopicsByLevel {
+    levelId: number;
+    completedTopics: CompletedTopic[];
+}
+
+const completedTopicsAdapter = createEntityAdapter<CompletedTopicsByLevel>({
+    selectId: completedTopicsByLevel => completedTopicsByLevel.levelId,
 });
 
 const initialState = completedTopicsAdapter.getInitialState();
 
 export const fetchCompletedTopicByTopic = createAsyncThunk(
     'completedTopics/fetchTopic',
-    async (topicId: number) => {
-        return await fetchCompletedTopicByTopicIdAsync(topicId);
+    async ({levelId, topicId} : {levelId: number, topicId: number} ) => {
+        const completedTopic = await fetchCompletedTopicByTopicIdAsync(topicId);
+        return {
+            levelId,
+            completedTopic
+        };
+    }
+);
+
+export const fetchCompletedTopicsByLevel = createAsyncThunk(
+    'completedTopics/fetchTopicsByLevel',
+    async (levelId: number) => {
+        const completedTopics = await fetchCompletedTopicByLevelIdAsync(levelId);
+        return {
+            levelId,
+            completedTopics
+        };
     }
 );
 
 export const addCompletedTopic = createAsyncThunk(
     'completedTopics/addTopic',
-    async (newCompletedTopic: AddCompletedTopicModel) => {
+    async ({levelId, newCompletedTopic} : {
+        levelId: number,
+        newCompletedTopic: AddCompletedTopicModel
+    }) => {
         const id = await addCompletedTopicAsync(newCompletedTopic);
-        return  {
+        const completedTopic = {
             id,
             ...newCompletedTopic
+        }
+        return  {
+            levelId,
+            completedTopic
         }
     }
 );
 
 export const editCompletedTopic = createAsyncThunk(
     'completedTopics/editTopic',
-    async (completedTopic : CompletedTopic)=> {
+    async ({levelId, completedTopic} : {
+        levelId: number,
+        completedTopic: CompletedTopic
+    })=> {
         await editCompletedTopicAsync(completedTopic);
-        return completedTopic;
+        return {
+            levelId,
+            completedTopic
+        };
     }
 );
 
@@ -43,18 +81,45 @@ const completedTopicsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchCompletedTopicByTopic.fulfilled, (state, action) => {
-                if(action.payload) {
-                    completedTopicsAdapter.addOne(state, action);
-                }
+                const { levelId, completedTopic} = action.payload;
+                state.entities[levelId]?.completedTopics.push(completedTopic);
             })
-            .addCase(addCompletedTopic.fulfilled, completedTopicsAdapter.addOne)
-            .addCase(editCompletedTopic.fulfilled, completedTopicsAdapter.upsertOne);
+            .addCase(fetchCompletedTopicsByLevel.fulfilled, completedTopicsAdapter.upsertOne)
+            .addCase(addCompletedTopic.fulfilled, (state, action) => {
+                const { levelId, completedTopic} = action.payload;
+                state.entities[levelId]?.completedTopics.push(completedTopic);
+            })
+            .addCase(editCompletedTopic.fulfilled, (state, action) => {
+                const { levelId, completedTopic} = action.payload;
+                let completedTopics = [...state.entities[levelId]?.completedTopics ?? []];
+                const oldCompletedTopic = completedTopics.find(topic => topic.id === completedTopic.id);
+                if(oldCompletedTopic) {
+                    let index = completedTopics.indexOf(oldCompletedTopic);
+                    completedTopics[index] = completedTopic;
+                }
+                state.entities[levelId]?.completedTopics.splice(0, state.entities[levelId]?.completedTopics.length);
+                state.entities[levelId]?.completedTopics.push(...completedTopics);
+            });
     }
 });
 
 export const {
-    selectIds: selectCompletedTopicsIds,
-    selectById: selectCompletedTopicByTopicId
+    selectIds: selectLevelsWithCompletedTopicsIds,
+    selectById: selectCompletedTopicByLevelId,
 } = completedTopicsAdapter.getSelectors<RootState>(state => state.completedTopics);
 
 export default completedTopicsSlice.reducer;
+
+export const selectCompletedTopicByLevelIdAndTopicId = (state: RootState, levelId: number, topicId: number) => {
+    return selectCompletedTopicByLevelId(state, levelId)?.completedTopics.find(topic => topic.topicId === topicId);
+}
+
+export const selectCompletedTopicsIds = createSelector(
+    (state: RootState, levelId: number) => selectCompletedTopicByLevelId(state, levelId),
+    levelCompletedTopics => {
+        if(levelCompletedTopics !== undefined){
+            return levelCompletedTopics.completedTopics.map(completedTopic => completedTopic.topicId)
+        }
+        return [];
+    }
+);

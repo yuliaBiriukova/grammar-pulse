@@ -26,7 +26,8 @@ export const Navbar = () => {
                     <Link to="/" className='logo-title'>GrammarPulse</Link>
                 </div>
                 <div className='nav-link-container'>
-                    <Link to="/" className='nav-link'>Grammar catalog</Link>
+                    <Link to="/" className='nav-link'>Grammar</Link>
+                    {isAuthorized && <Link to="/practice" className='nav-link ml-3'>My Practice</Link>}
                 </div>
             </div>
             <div className='d-flex-end-center'>

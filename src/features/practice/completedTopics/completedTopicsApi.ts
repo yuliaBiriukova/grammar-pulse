@@ -6,6 +6,10 @@ export async function fetchCompletedTopicByTopicIdAsync(topicId: number) {
     return await ApiHelper.get(`CompletedTopics`, {topicId});
 }
 
+export async function fetchCompletedTopicByLevelIdAsync(levelId: number) {
+    return await ApiHelper.get(`CompletedTopics/${levelId}`);
+}
+
 export async function addCompletedTopicAsync(model: AddCompletedTopicModel) {
     return await ApiHelper.post('CompletedTopics', model);
 }
