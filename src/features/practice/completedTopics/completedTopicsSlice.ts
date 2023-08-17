@@ -81,8 +81,13 @@ const completedTopicsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchCompletedTopicByTopic.fulfilled, (state, action) => {
-                const { levelId, completedTopic} = action.payload;
-                state.entities[levelId]?.completedTopics.push(completedTopic);
+                const { levelId, completedTopic } = action.payload;
+
+                if (state.entities[levelId]) {
+                    state.entities[levelId]?.completedTopics.push(completedTopic);
+                } else {
+                    state.entities[levelId] = { levelId, completedTopics: [completedTopic] };
+                }
             })
             .addCase(fetchCompletedTopicsByLevel.fulfilled, completedTopicsAdapter.upsertOne)
             .addCase(addCompletedTopic.fulfilled, (state, action) => {
