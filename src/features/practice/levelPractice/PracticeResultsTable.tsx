@@ -45,12 +45,6 @@ export const PracticeResultsTable = ({levelId} : LevelProps) => {
         }
     }, [levelId, levelsWithCompletedTopicsIds]);
 
-/*    useEffect(() => {
-        if(topicsStatus === 'idle'){
-            setLevelCompletedTopicsIds(topicsIds.filter(topicId => completedTopics.hasOwnProperty(topicId)));
-        }
-    }, [topicsStatus, topicsIds, completedTopics]);*/
-
     let tableRows;
 
     if(topicsStatus === 'idle'){

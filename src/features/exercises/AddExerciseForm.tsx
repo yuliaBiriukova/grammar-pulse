@@ -5,6 +5,8 @@ import React, {useEffect, useState} from "react";
 import {AddExerciseModel} from "../models/AddExerciseModel";
 import {addExercise, selectLastTopicExerciseId} from "./exercisesSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const AddExerciseForm = () => {
     const { levelId, topicId } = useParams();
@@ -22,6 +24,7 @@ export const AddExerciseForm = () => {
     const [isAdded, setIsAdded] = useState(false);
     const [ukrainianValue, setUkrainianValue] = useState('');
     const [englishValue, setEnglishValue] = useState('');
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -33,10 +36,10 @@ export const AddExerciseForm = () => {
     }, [isAdded]);
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/')
         }
-    }, [isAuthorized]);
+    }, [isAuthorized, isUserAdmin]);
 
     const onUkrainianValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUkrainianValue(event.currentTarget.value);

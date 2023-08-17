@@ -3,6 +3,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {editLevel, selectLevelById} from "./levelsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const EditLevelForm = () => {
     const {levelId} = useParams();
@@ -15,6 +17,7 @@ export const EditLevelForm = () => {
     const [code, setCode] = useState(level?.code);
     const [name, setName] = useState(level?.name);
     let [errorText, setErrorText] = useState('');
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -25,10 +28,10 @@ export const EditLevelForm = () => {
     }, [level]);
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, [isAuthorized, isUserAdmin]);
 
     const onCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCode(event.currentTarget.value);

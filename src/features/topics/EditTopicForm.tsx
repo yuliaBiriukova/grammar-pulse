@@ -5,6 +5,8 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {editTopic, selectTopicByIdAndLevelId} from "./topicsSlice";
 import {Topic} from "../models/Topic";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const EditTopicForm = () => {
     const {levelId, topicId} = useParams();
@@ -20,6 +22,7 @@ export const EditTopicForm = () => {
     const [name, setName] = useState(topic?.name);
     const [content, setContent] = useState(topic?.content);
     let [errorText, setErrorText] = useState('');
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -30,10 +33,10 @@ export const EditTopicForm = () => {
     }, [topic]);
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, [isAuthorized, isUserAdmin]);
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);

@@ -4,6 +4,8 @@ import {AddLevelModel} from "../models/AddLevelModel";
 import {addLevel, selectLastLevelId} from "./levelsSlice";
 import {useNavigate} from "react-router-dom";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const AddLevelForm = () => {
 
@@ -14,6 +16,7 @@ export const AddLevelForm = () => {
     const [name, setName] = useState('');
     const [isAdded, setIsAdded] = useState(false);
     let [errorText, setErrorText] = useState('');
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -25,10 +28,10 @@ export const AddLevelForm = () => {
     }, [isAdded]);
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, [isAuthorized, isUserAdmin]);
 
     const onCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCode(event.currentTarget.value);

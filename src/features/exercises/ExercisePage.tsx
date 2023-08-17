@@ -14,6 +14,8 @@ import {
 import {ExerciseType} from "../models/enums/ExerciseType";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const ExercisePage = () => {
     const { levelId, topicId, exerciseId } = useParams();
@@ -33,6 +35,7 @@ export const ExercisePage = () => {
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const [isFetched, setIsFetched] = useState(false);
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -61,10 +64,10 @@ export const ExercisePage = () => {
     }, [isFetched, exercisesIds]);
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/');
         }
-    }, [isAuthorized])
+    }, [isAuthorized, isUserAdmin])
 
     const onDeleteClick = async () => {
         let isConfirm = window.confirm('Delete this exercise?');

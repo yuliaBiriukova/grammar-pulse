@@ -6,6 +6,8 @@ import {selectLevelById} from "../levels/levelsSlice";
 import {AddTopicModel} from "../models/AddTopicModel";
 import {addTopic, selectLastLevelTopicId} from "./topicsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const AddTopicForm = () => {
 
@@ -21,6 +23,7 @@ export const AddTopicForm = () => {
     const [isAdded, setIsAdded] = useState(false);
     const [name, setName] = useState('');
     const [content, setContent] = useState('');
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -32,10 +35,10 @@ export const AddTopicForm = () => {
     }, [isAdded]);
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, [isAuthorized, isUserAdmin]);
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.currentTarget.value);

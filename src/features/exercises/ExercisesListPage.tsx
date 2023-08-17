@@ -1,9 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {useAppSelector} from "../../app/hooks";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 import {ExercisesList} from "./ExercisesList";
 import {selectIsAuthorized} from "../auth/authSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const ExercisesListPage = () => {
     const {levelId, topicId} = useParams();
@@ -16,13 +18,15 @@ export const ExercisesListPage = () => {
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!isAuthorized) {
+        if(!isAuthorized || !isUserAdmin) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, [isAuthorized, isUserAdmin]);
 
     return (
         <div className='content-container'>
