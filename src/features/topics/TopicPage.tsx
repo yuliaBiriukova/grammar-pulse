@@ -14,6 +14,8 @@ import {
     selectExercisesCountByTopicId,
     selectTopicsWithExercisesIds
 } from "../exercises/exercisesSlice";
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const TopicPage = () => {
     const { levelId, topicId } = useParams();
@@ -35,6 +37,7 @@ export const TopicPage = () => {
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const [isTopicsFetched, setIsTopicsFetched] = useState(levelsWithTopicsIds.includes(intLevelId));
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -99,21 +102,25 @@ export const TopicPage = () => {
                 </div>
                 {isAuthorized && (
                     <div className='d-flex'>
-                        <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
+                        {isUserAdmin &&
+                            <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
+                        }
                         {!completedTopic && !!exercisesCount &&
-                            <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary mr-3'>Practice</Link>
+                            <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary'>Practice</Link>
                         }
                         {completedTopic && !!exercisesCount &&
-                            <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary mr-3'>Practice again</Link>
+                            <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary'>Practice again</Link>
                         }
-                        <div className='d-flex'>
-                            <Link to={`/topics/${levelId}/${topicId}/edit`} className='icon-button mr-1'>
-                                <img src={editIcon} alt="edit-icon"/>
-                            </Link>
-                            <div className='icon-button' onClick={onDeleteClick}>
-                                <img src={deleteIcon} alt="delete-icon"/>
+                        {isUserAdmin &&
+                            <div className='d-flex ml-3'>
+                                <Link to={`/topics/${levelId}/${topicId}/edit`} className='icon-button mr-1'>
+                                    <img src={editIcon} alt="edit-icon"/>
+                                </Link>
+                                <div className='icon-button' onClick={onDeleteClick}>
+                                    <img src={deleteIcon} alt="delete-icon"/>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 )}
                 {!isAuthorized && (

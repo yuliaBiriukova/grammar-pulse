@@ -1,7 +1,6 @@
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
-import {loginUserAsync} from "./authApi";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {login, selectIsAuthorized} from "./authSlice";
 
@@ -18,10 +17,8 @@ export const LoginPage = () => {
     }, [isAuthorized]);
 
     const handleOnSuccess = async (credentialResponse: CredentialResponse) => {
-        let userToken = credentialResponse.credential as string;
-        localStorage.setItem('userToken', userToken);
-        await loginUserAsync();
-        dispatch(login());
+        let accessToken = credentialResponse.credential as string;
+        await dispatch(login(accessToken));
         navigate("/");
     }
 

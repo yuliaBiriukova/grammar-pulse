@@ -1,23 +1,39 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
+import {loginUserAsync} from "./authApi";
 
 const initialState = {
-    isAuthorized: !!localStorage.getItem('userToken'),
+    isAuthorized: !!localStorage.getItem('accessToken'),
 }
+
+export const login = createAsyncThunk(
+    'auth/loginUser',
+    async (accessToken: string)=> {
+        localStorage.setItem('accessToken', accessToken);
+        const userRole = await loginUserAsync();
+        localStorage.setItem('userRole', userRole);
+        return;
+    }
+);
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        login: (state) => {
-            state.isAuthorized = true;
-        },
         logout: (state) => {
             state.isAuthorized = false;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userRole');
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(login.fulfilled, (state) => {
+            state.isAuthorized = true;
+        });
     }
 });
 
-export const { login, logout } = authSlice.actions;
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
 

@@ -6,7 +6,7 @@ export default class ApiHelper {
 
         const headers = new Headers();
 
-        const jwtToken = localStorage.getItem('userToken');
+        const jwtToken = localStorage.getItem('accessToken');
         if (jwtToken) {
             headers.append('Authorization', `Bearer ${jwtToken}`);
         }
@@ -29,7 +29,7 @@ export default class ApiHelper {
 
         const headers = new Headers({ "Content-Type": "application/json" });
 
-        const jwtToken = localStorage.getItem('userToken');
+        const jwtToken = localStorage.getItem('accessToken');
         if (jwtToken) {
             headers.append('Authorization', `Bearer ${jwtToken}`);
         }
@@ -50,7 +50,7 @@ export default class ApiHelper {
 
         const headers = new Headers({ "Content-Type": "application/json" });
 
-        const jwtToken = localStorage.getItem('userToken');
+        const jwtToken = localStorage.getItem('accessToken');
         if (jwtToken) {
             headers.append('Authorization', `Bearer ${jwtToken}`);
         }
@@ -70,7 +70,7 @@ export default class ApiHelper {
 
         const headers = new Headers();
 
-        const jwtToken = localStorage.getItem('userToken');
+        const jwtToken = localStorage.getItem('accessToken');
         if (jwtToken) {
             headers.append('Authorization', `Bearer ${jwtToken}`);
         }

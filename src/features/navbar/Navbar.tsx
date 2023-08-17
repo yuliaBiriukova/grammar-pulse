@@ -1,20 +1,21 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {testHref} from "../../common/constants";
-import {useAppSelector} from "../../app/hooks";
-import {selectIsAuthorized} from "../auth/authSlice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {logout, selectIsAuthorized} from "../auth/authSlice";
 import logo from '../../images/logo.svg';
 import './Navbar.css';
 
 export const Navbar = () => {
     const isAuthorized = useAppSelector(selectIsAuthorized);
+    const dispatch = useAppDispatch();
 
     const onLogoutClick = async () => {
         if(!isAuthorized) {
             console.log(Error, 'User is not authorized!');
             return;
         }
-        localStorage.removeItem('userToken');
+        await dispatch(logout());
         document.location.reload();
     }
 

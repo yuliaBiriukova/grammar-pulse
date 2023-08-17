@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {deleteLevel, selectLevelById, selectLevelsIds} from "./levelsSlice";
@@ -6,6 +6,8 @@ import {TopicsList} from "../topics/TopicsList";
 import {selectIsAuthorized} from "../auth/authSlice";
 import deleteIcon from '../../images/delete-icon.svg';
 import editIcon from '../../images/edit_icon.svg';
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const LevelPage = () => {
     const {levelId} = useParams();
@@ -16,6 +18,8 @@ export const LevelPage = () => {
     const levelsStatus = useAppSelector(state => state.levels.status);
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
+
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -48,16 +52,20 @@ export const LevelPage = () => {
                 </div>
                 {isAuthorized && (
                     <div className='d-flex'>
-                        <Link to={`/practice/${levelId}`} className='button-secondary mr-3'>Practice&nbsp;results</Link>
-                        <Link to={`/topics/${level?.id}/new`} className='button-primary mr-3'>Add&nbsp;topic</Link>
-                        <div className='d-flex'>
-                            <Link to={`/levels/${level?.id}/edit`} className='icon-button mr-1'>
-                                <img src={editIcon} alt="edit-icon"/>
-                            </Link>
-                            <div className='icon-button' onClick={onDeleteClick}>
-                                <img src={deleteIcon} alt="delete-icon"/>
+                        <Link to={`/practice/${levelId}`} className='button-secondary'>Practice&nbsp;results</Link>
+                        {isUserAdmin &&
+                            <div className='d-flex'>
+                                <Link to={`/topics/${level?.id}/new`} className='button-primary ml-3 mr-3'>Add&nbsp;topic</Link>
+                                <div className='d-flex'>
+                                    <Link to={`/levels/${level?.id}/edit`} className='icon-button mr-1'>
+                                        <img src={editIcon} alt="edit-icon"/>
+                                    </Link>
+                                    <div className='icon-button' onClick={onDeleteClick}>
+                                        <img src={deleteIcon} alt="delete-icon"/>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 )}
             </div>

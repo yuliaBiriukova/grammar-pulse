@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {fetchTopicsByLevel, selectLevelsWithTopicsIds, selectTopicsIds} from "./topicsSlice";
@@ -6,6 +6,8 @@ import {TopicListItem} from "./TopicListItem";
 import {fetchLevels, selectLevelById} from "../levels/levelsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
 import plusIcon from '../../images/plus_icon.svg';
+import UserHelper from "../../helpers/userHelper";
+import {UserRole} from "../models/enums/UserRole";
 
 export const TopicsSideList = () => {
     const { levelId } = useParams();
@@ -17,6 +19,8 @@ export const TopicsSideList = () => {
     const levelsStatus = useAppSelector(state => state.levels.status);
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
+
+    const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
 
@@ -52,7 +56,7 @@ export const TopicsSideList = () => {
                         <h2 className='side-list-title text-medium'>{level?.code}:&nbsp;{level?.name}</h2>
                     </Link>
                 </div>
-                {isAuthorized && (
+                {isAuthorized && isUserAdmin && (
                     <Link to={`/topics/${levelId}/new`} className='icon-button ml-2'>
                         <img src={plusIcon} alt="plus_icon"/>
                     </Link>

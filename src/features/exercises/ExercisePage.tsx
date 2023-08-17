@@ -11,7 +11,7 @@ import {
     selectExercisesIds,
     selectTopicsWithExercisesIds
 } from "./exercisesSlice";
-import {ExerciseType} from "../models/ExerciseType";
+import {ExerciseType} from "../models/enums/ExerciseType";
 import {selectTopicByIdAndLevelId} from "../topics/topicsSlice";
 import {selectIsAuthorized} from "../auth/authSlice";
 
