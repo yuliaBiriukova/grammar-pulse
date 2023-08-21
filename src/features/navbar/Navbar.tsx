@@ -15,8 +15,11 @@ export const Navbar = () => {
             console.log(Error, 'User is not authorized!');
             return;
         }
-        await dispatch(logout());
-        document.location.reload();
+        let isConfirm = window.confirm('Do you want to logout?');
+        if(isConfirm) {
+            await dispatch(logout());
+            document.location.reload();
+        }
     }
 
     return (
