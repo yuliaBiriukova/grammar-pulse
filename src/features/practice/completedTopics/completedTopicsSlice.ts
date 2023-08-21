@@ -12,6 +12,7 @@ import {AddCompletedTopicModel} from "../../models/AddCompletedTopicModel";
 interface CompletedTopicsByLevel {
     levelId: number;
     completedTopics: CompletedTopic[];
+    isFetched: boolean;
 }
 
 const completedTopicsAdapter = createEntityAdapter<CompletedTopicsByLevel>({
@@ -26,7 +27,7 @@ export const fetchCompletedTopicByTopic = createAsyncThunk(
         const completedTopic = await fetchCompletedTopicByTopicIdAsync(topicId);
         return {
             levelId,
-            completedTopic
+            completedTopic,
         };
     }
 );
@@ -37,7 +38,8 @@ export const fetchCompletedTopicsByLevel = createAsyncThunk(
         const completedTopics = await fetchCompletedTopicByLevelIdAsync(levelId);
         return {
             levelId,
-            completedTopics
+            completedTopics,
+            isFetched: true,
         };
     }
 );
@@ -82,14 +84,14 @@ const completedTopicsSlice = createSlice({
         builder
             .addCase(fetchCompletedTopicByTopic.fulfilled, (state, action) => {
                 const { levelId, completedTopic } = action.payload;
-                let completedTopicsByLevel: CompletedTopicsByLevel = {
-                    levelId,
-                    completedTopics: [completedTopic]
-                }
-
                 if (state.entities[levelId]) {
                     state.entities[levelId]?.completedTopics.push(completedTopic);
                 } else {
+                    let completedTopicsByLevel: CompletedTopicsByLevel = {
+                        levelId,
+                        completedTopics: [completedTopic],
+                        isFetched: true,
+                    }
                     completedTopicsAdapter.addOne(state, completedTopicsByLevel);
                 }
             })
@@ -132,3 +134,7 @@ export const selectCompletedTopicsIds = createSelector(
         return [];
     }
 );
+
+export const selectIsFetchedByLevelId = (state: RootState, levelId: number) => {
+    return selectCompletedTopicByLevelId(state, levelId)?.isFetched;
+}

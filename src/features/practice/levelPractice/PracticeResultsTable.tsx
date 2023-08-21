@@ -8,7 +8,7 @@ import {
 import React, {useEffect} from "react";
 import {
     fetchCompletedTopicsByLevel,
-    selectCompletedTopicByLevelId,
+    selectCompletedTopicByLevelId, selectIsFetchedByLevelId,
     selectLevelsWithCompletedTopicsIds
 } from "../completedTopics/completedTopicsSlice";
 import {PracticeResultsTableItem} from "./PracticeResultsTableItem";
@@ -24,6 +24,7 @@ export const PracticeResultsTable = ({levelId} : LevelProps) => {
     const levelsWithCompletedTopicsIds = useAppSelector(selectLevelsWithCompletedTopicsIds);
     const completedTopics = useAppSelector(state => selectCompletedTopicByLevelId(state, levelId));
     const topicsStatus = useAppSelector(selectTopicsStatus);
+    const isCompletedTopicsFetched = useAppSelector(state => selectIsFetchedByLevelId(state, levelId));
 
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
@@ -60,10 +61,10 @@ export const PracticeResultsTable = ({levelId} : LevelProps) => {
 
     return (
         <div>
-            {!tableRows &&
+            {!tableRows && isCompletedTopicsFetched &&
                 <p className='mb-0'>You haven't practiced any topics at this level yet.</p>
             }
-            {tableRows &&
+            {tableRows && isCompletedTopicsFetched &&
                 <table className='table'>
                     <thead>
                     <tr>

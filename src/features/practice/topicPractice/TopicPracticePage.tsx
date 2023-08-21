@@ -98,6 +98,17 @@ export const TopicPracticePage = () => {
         setIsLast(exerciseIndex === exercisesCount);
     }, [exerciseIndex, exercisesCount]);
 
+    useEffect(() => {
+        const unloadCallback = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+            event.returnValue = "";
+            return "";
+        };
+
+        window.addEventListener("beforeunload", unloadCallback);
+        return () => window.removeEventListener("beforeunload", unloadCallback);
+    }, []);
+
     const onAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(event.currentTarget.value);
     }

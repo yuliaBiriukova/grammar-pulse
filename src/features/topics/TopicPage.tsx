@@ -105,14 +105,14 @@ export const TopicPage = () => {
                 </div>
                 {isAuthorized && (
                     <div className='d-flex'>
-                        {isUserAdmin &&
-                            <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary mr-3'>View&nbsp;exercises</Link>
-                        }
                         {!completedTopic && !!exercisesCount &&
                             <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary'>Practice</Link>
                         }
                         {completedTopic && !!exercisesCount &&
                             <Link to={`/topics/${levelId}/${topicId}/practice/${1}`} className='button-primary'>Practice again</Link>
+                        }
+                        {isUserAdmin &&
+                            <Link to={`/exercises/${levelId}/${topicId}/`} className='button-secondary ml-3'>View&nbsp;exercises</Link>
                         }
                         {isUserAdmin &&
                             <div className='d-flex ml-3'>
