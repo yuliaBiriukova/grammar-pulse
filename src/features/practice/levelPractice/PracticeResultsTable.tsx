@@ -41,7 +41,7 @@ export const PracticeResultsTable = ({levelId} : LevelProps) => {
             return;
         }
 
-        if(!levelsWithCompletedTopicsIds.includes(levelId) && isAuthorized) {
+        if(!isCompletedTopicsFetched && isAuthorized) {
             dispatch(fetchCompletedTopicsByLevel(levelId));
         }
     }, [levelId, levelsWithCompletedTopicsIds]);

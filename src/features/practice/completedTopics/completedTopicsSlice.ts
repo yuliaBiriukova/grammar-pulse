@@ -90,7 +90,7 @@ const completedTopicsSlice = createSlice({
                     let completedTopicsByLevel: CompletedTopicsByLevel = {
                         levelId,
                         completedTopics: [completedTopic],
-                        isFetched: true,
+                        isFetched: false,
                     }
                     completedTopicsAdapter.addOne(state, completedTopicsByLevel);
                 }
