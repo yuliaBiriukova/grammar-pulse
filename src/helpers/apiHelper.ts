@@ -1,5 +1,7 @@
+export const API_URL = process.env.REACT_APP_API_URL;
+
 export default class ApiHelper {
-    private static baseUrl = 'https://localhost:44334/api/';
+    private static baseUrl = API_URL;
 
     public static async get<T>(url: string, params = {}) {
         const endpoint = this.createEndpoint(url);
