@@ -37,7 +37,6 @@ export const TopicPage = () => {
     const isAuthorized = useAppSelector(selectIsAuthorized);
 
     const [isTopicsFetched, setIsTopicsFetched] = useState(levelsWithTopicsIds.includes(intLevelId));
-    const [isCompletedTopicsFetched, setIsCompletedTopicsFetched] = useState(false);
     const [isUserAdmin, setIsUserAdmin] = useState(UserHelper.IsUserRole(UserRole.Admin));
 
     const dispatch = useAppDispatch();
@@ -63,13 +62,11 @@ export const TopicPage = () => {
             return;
         }
 
-        if(!completedTopicsIds.includes(intTopicId) && isAuthorized && !isCompletedTopicsFetched) {
+        if(!completedTopicsIds.includes(intTopicId) && isAuthorized) {
             dispatch(fetchCompletedTopicByTopic({
                 levelId: intLevelId,
                 topicId: intTopicId
-            })).then(_ => {
-                setIsCompletedTopicsFetched(true);
-            });
+            }));
         }
     }, [completedTopicsIds, intTopicId]);
 
