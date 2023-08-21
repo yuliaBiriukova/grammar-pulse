@@ -23,8 +23,8 @@ export const TopicPracticeResult = () => {
                 </h2>
             </div>
             <div>
-                <p className='mt-0'>You have passed the test!</p>
-                <p className='mt-0'>Your result: {completedTopic?.percentage}%</p>
+                <p className='mt-0'>You have completed the practice!</p>
+                <p>Your result: {completedTopic?.percentage}%</p>
                 <div className='d-flex-end mt-3'>
                     <Link to={`/topics/${levelId}/${topicId}`} className='button-secondary'>Back to topic</Link>
                 </div>
