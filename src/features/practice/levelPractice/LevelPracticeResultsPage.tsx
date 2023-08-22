@@ -23,7 +23,7 @@ export const LevelPracticeResultsPage = () => {
         <div className='content-container'>
             <h2 className='title mb-3'>
                 <Link to={`/levels/${levelId}`} className='text-decoration-none'>{level?.code}: {level?.name}</Link>
-                <span>&nbsp;/&nbsp;Practice results</span>
+                <span className='text-color-grey'>&nbsp;/&nbsp;Practice results</span>
             </h2>
             <PracticeResultsTable levelId={intLevelId}/>
         </div>

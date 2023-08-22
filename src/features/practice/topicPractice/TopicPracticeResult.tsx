@@ -19,7 +19,7 @@ export const TopicPracticeResult = () => {
             <div className='d-flex'>
                 <h2 className='title d-flex-align-start'>
                     <Link to={`/topics/${levelId}/${topicId}`} className='text-decoration-none'>{topic?.name}</Link>
-                    <span>&nbsp;/&nbsp;Practice</span>
+                    <span className='text-color-grey'>&nbsp;/&nbsp;Practice result</span>
                 </h2>
             </div>
             <div>

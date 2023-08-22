@@ -84,7 +84,7 @@ export const AddTopicForm = () => {
         <div className='content-container'>
             <h2 className='title'>
                 <Link to={`/levels/${levelId}`} className='text-decoration-none'>{level?.code}: {level?.name}</Link>
-                <span>&nbsp;/&nbsp;Add new topic</span>
+                <span className='text-color-grey'>&nbsp;/&nbsp;Add new topic</span>
             </h2>
             {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>

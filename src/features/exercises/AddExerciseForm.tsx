@@ -86,7 +86,7 @@ export const AddExerciseForm = () => {
         <div className='content-container'>
             <h2 className='title'>
                 <Link to={`/exercises/${levelId}/${topicId}`} className='text-decoration-none'>{topic?.name}</Link>
-                <span>&nbsp;/&nbsp;Add new exercise</span>
+                <span className='text-color-grey'>&nbsp;/&nbsp;Add new exercise</span>
             </h2>
             {errorText && (<p className='error'>{errorText}</p>)}
             <form className='d-flex-column'>

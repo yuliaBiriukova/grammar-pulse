@@ -34,7 +34,7 @@ export const ExercisesListPage = () => {
                 <div className='d-flex align-self-center'>
                     <h2 className='title mb-0'>
                         <Link to={`/topics/${levelId}/${topicId}`} className='text-decoration-none'>{topic?.name}</Link>
-                        <span>&nbsp;/&nbsp;Exercises</span>
+                        <span className='text-color-grey'>&nbsp;/&nbsp;Exercises</span>
                     </h2>
                 </div>
                 <div className='d-flex'>

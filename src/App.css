@@ -290,6 +290,10 @@ h4 {
   color: #4CAF50;
 }
 
+.text-color-grey {
+  color: #7F7F7F;
+}
+
 .text-bold {
   font-weight: 600;
 }
