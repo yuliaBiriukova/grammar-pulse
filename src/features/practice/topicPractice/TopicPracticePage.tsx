@@ -109,6 +109,23 @@ export const TopicPracticePage = () => {
         return () => window.removeEventListener("beforeunload", unloadCallback);
     }, []);
 
+    useEffect(() => {
+        window.history.pushState(null, "", window.location.href);
+
+        const popstateCallback = (event: PopStateEvent) => {
+            console.log('popstate event fired', event);
+            const isGoBackConfirmed = window.confirm('After going back practice will not be saved! Are you sure you want to leave?');
+            if(isGoBackConfirmed) {
+                navigate(`/topics/${levelId}/${topicId}`);
+            }
+        };
+
+        window.addEventListener('popstate', popstateCallback);
+
+        return () => window.removeEventListener('popstate', popstateCallback);
+
+    }, []);
+
     const onAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(event.currentTarget.value);
     }
@@ -116,14 +133,14 @@ export const TopicPracticePage = () => {
     const onCheckClicked = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        if(!answer || answer === ' ') {
+        if(!answer.trim()) {
             setErrorText('Can not save! Fill the required fields!');
             return;
         }
 
         setIsChecked(true);
 
-        if(answer === exercise?.englishValue) {
+        if(answer.trim() === exercise?.englishValue) {
             setIsCorrect(true);
             dispatch(addCorrectAnswer(intTopicId));
         }
