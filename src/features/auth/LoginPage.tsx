@@ -14,7 +14,7 @@ export const LoginPage = () => {
         if(isAuthorized) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, []);
 
     const handleOnSuccess = async (credentialResponse: CredentialResponse) => {
         let accessToken = credentialResponse.credential as string;

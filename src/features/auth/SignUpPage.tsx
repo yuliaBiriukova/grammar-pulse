@@ -14,12 +14,11 @@ export const SignUpPage = () => {
         if(isAuthorized) {
             navigate('/');
         }
-    }, [isAuthorized]);
+    }, []);
 
     const handleOnSuccess = async (credentialResponse: CredentialResponse) => {
         let accessToken = credentialResponse.credential as string;
         await dispatch(login(accessToken));
-        document.location.reload();
         navigate("/");
     }
 
